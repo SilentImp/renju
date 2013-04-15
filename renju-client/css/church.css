@@ -1,0 +1,233 @@
+.church{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+
+  -webkit-transform: translateZ(.5px);
+  -moz-transform: translateZ(.5px);
+  transform: translateZ(.5px);
+
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  }
+  .church .wall-floor{
+    width: 50px;
+    height: 50px;
+    display: block;
+
+    position: absolute;
+    top: -25px;
+    left: -25px;
+
+/*
+    -webkit-transform-origin: 100% 100% 0;
+    -moz-transform-origin: 100% 100% 0;
+    transform-origin: 100% 100% 0;
+
+    -webkit-transform: translateZ(.1px);
+    -moz-transform: translateZ(.1px);
+    transform: translateZ(.1px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/asp.jpg') 50% 50% repeat;
+    -webkit-background-size: 100%;
+     -o-background-size: 100%;
+        background-size: 100%;*/
+    }
+
+  .church .wall-1{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) translateZ(17px);
+    transform: rotateX(-90deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-front.jpg') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+    }
+
+  .church .wall-6{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) rotateY(180deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) rotateY(180deg) translateZ(17px);
+    transform: rotateX(-90deg) rotateY(180deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-front.jpg') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+    }
+
+  .church .wall-2{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) rotateY(-120deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) rotateY(-120deg) translateZ(17px);
+    transform: rotateX(-90deg) rotateY(-120deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-side.png') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+    }
+
+  .church .wall-3{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) rotateY(60deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) rotateY(60deg) translateZ(17px);
+    transform: rotateX(-90deg) rotateY(60deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-side.png') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+
+    }
+
+  .church .wall-4{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) rotateY(-60deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) rotateY(-60deg) translateZ(17px);
+    transform: rotateX(-90deg) rotateY(-60deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-side.png') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+    }
+
+  .church .wall-5{
+    width: 20px;
+    height: 42px;
+    display: block;
+
+    position: absolute;
+    top: -42px;
+    left: -10px;
+
+    -webkit-transform-origin: 50% 100% 0;
+    -moz-transform-origin: 50% 100% 0;
+    transform-origin: 50% 100% 0;
+
+    -webkit-transform: rotateX(-90deg) rotateY(120deg) translateZ(17px);
+    -moz-transform: rotateX(-90deg) rotateY(120deg) translateZ(17px);
+    transform: rotateX(-90deg) rotateY(120deg) translateZ(17px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-side.png') 50% 0 no-repeat;
+    -webkit-background-size: 20px auto;
+     -o-background-size: 20px auto;
+        background-size: 20px auto;
+
+    }
+  .church .wall-roof{
+    width: 40px;
+    height: 35px;
+    display: block;
+
+    position: absolute;
+    top: -17.5px;
+    left: -20px;
+
+    -webkit-transform-origin: 100% 100% 0;
+    -moz-transform-origin: 100% 100% 0;
+    transform-origin: 100% 100% 0;
+
+    -webkit-transform: translateZ(42px);
+    -moz-transform: translateZ(42px);
+    transform: translateZ(42px);
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+
+    background: url('../img/ch-top.png') 50% 50% no-repeat;
+    -webkit-background-size: 40px;
+     -o-background-size: 40px;
+        background-size: 40px;
+
+    }

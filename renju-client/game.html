@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru-ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Renju</title>
+  <link rel="stylesheet" href="css/common.css">
+  <script src="js/PxLoader.js"></script>
+  <script src="js/PxLoaderImage.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/preloading.js"></script>
+  <script src="js/handlebars.js"></script>
+  <script src="js/modernizr.js"></script>
+  <script src="js/renjuController.js"></script>
+</head>
+<body>
+
+<div class="loading-screen">
+  <h1>Грузюся</h1>
+  <div class="progress"><div id="loaded"></div></div>
+</div>
+
+<div class="game">
+  <div class="information">
+    <a href="#quit" class="quit">Сбежать</a>
+  </div>
+  <div class="board-front"></div>
+  <div class="field">
+    <div class="board">
+      <div class="board-top"></div>
+      <div class="board-front"></div>
+      <div class="board-left"></div>
+      <div class="board-right"></div>
+      <div class="board-back"></div>
+    </div>
+  </div>
+</div>
+
+<div class="win-screen">
+  <div class="message"></div>
+  <nav>
+    <a href="#replay" class="replay">Давай еще раз!</a>
+    <a href="#ok" class="ok">| (• ◡•)|╯╰(❍ᴥ❍ʋ)</a>
+  </nav>
+</div>
+
+<div class="two-user-screen">
+  <div class="wrapper">
+    <nav>
+      <a href="#cancel" class="cancel">Я передумал! Бежи-и-и-м!</a>
+      <a href="#confirm" class="confirm">Вперед!</a>
+    </nav>
+
+    <form action="/create_user/" method="post" class="first-user">
+      <fieldset>
+        <div class="avatar"></div>
+        <label for="player-1-name">Я</label>
+        <input required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
+        <button type="submit">Я все сказал!</button>
+      </fieldset>
+      <p class="about">
+        Я хожу первым, но могу победить, только если построю 5 храмов в ряд.
+        Не больше, не меньше.
+      </p>
+    </form>
+
+    <form action="/create_user/" method="post" class="second-user">
+      <fieldset>
+        <div class="avatar"></div>
+        <label for="player-2-name">Я</label>
+        <input required="required" type="text" class="player-name" id="player-2-name" placeholder="Джанго" value="">
+        <button type="submit">Я все сказал!</button>
+      </fieldset>
+      <p class="about">
+        Я хожу вторым, но могу строить свои бордели так, как мне того хочется.
+      </p>
+    </form>
+  </div>
+
+</div>
+
+
+
+<div class="avatars-popup"><div class="icons"></div></div>
+
+<div class="single-user-screen"></div>
+
+<div class="start-screen">
+  <h2>Renju</h2>
+  <nav>
+    <a href="#online" class="online">
+      <b>
+        Я хочу играть
+        <i>по сети</i>
+      </b>
+    </a>
+    <a href="hotseat" class="hotseat">
+      <b>
+        Я хочу играть
+        <u>с одного</u>
+        <i>компьютера</i>
+      </b>
+    </a>
+  </nav>
+</div>
+
+<div class="standoff">
+  <nav>
+    <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+  </nav>
+</div>
+
+<div class="see-game-screen"></div>
+
+<div id="templates">
+  <div id="loose_message">
+    Все хорошо в меру. Если вы строите слишком много церквей, то хорошеньких
+    мальчиков на всех уже не хватает. И вина. И пожертвований. {{player1}}
+    линчевали его же подопечные. С помощью железной девы, металического ёршика
+    и весьма шокированного ослика страдающего от диареи.
+  </div>
+  <div id="church_message">
+    {{player1}} расставил для {{player2}} очень хитрую ловушку. Он знал, что
+    {{player2}} предпочитает погорячее и поэтому развел на главной площади
+    огромный костер с ведьмами. {{player2}} как раз шел мимо, сел в костер
+    и сгорел. Бедняжка. {{player1}} сделал из его черепа отличную, расписанную
+    цветочками, чашку.
+  </div>
+  <div id="house_message">
+    {{player2}} убедил всех монашек уйти в бордели и с гомерическим хохотом
+    убежал в закат. {{player1}} лопнул от злости.
+  </div>
+  <div id="standoff_message">
+    <p class="message">
+      {{player1}} заключил мир с {{player2}} и жили они долго и счастливо,
+      приблизительно три с половиной недели, пока {{player1}} не убил
+      {{player2}} во сне ядовитым кинжалом и не был по нелепой случайности
+      затоптан стаей диких медведей-осеменителей приблизительно неделю спустя.
+    </p>
+  </div>
+  <div id="player">
+    {{#if first}}
+    {{! <!-- }}
+    <div class="player player-1 selected" id="{{id}}">
+    {{! --> }}
+    {{else}}
+    <div class="player player-2" id="{{id}}">
+    {{/if}}
+      <div class="details">
+        <p class="avatar" data-avatar-x="{{x}}" data-avatar-y="{{y}}" style="background-position: -{{x}}px -{{y}}px"></p>
+        <p class="name">{{name}}</p>
+      </div>
+      <nav>
+        <a href="#pass" class="pass">Пас</a>
+        <a href="#remove" class="remove">Я не я!</a>
+      </nav>
+    </div>
+  </div>
+  <div id="house">
+    <div class="house">
+      <div class="wall-front"></div>
+      <div class="wall-left"></div>
+      <div class="wall-right"></div>
+      <div class="wall-roof"></div>
+      <div class="wall-floor"></div>
+    </div>
+  </div>
+  <div id="church">
+    <div class="church">
+      <div class="wall-1"></div>
+      <div class="wall-2"></div>
+      <div class="wall-3"></div>
+      <div class="wall-4"></div>
+      <div class="wall-5"></div>
+      <div class="wall-6"></div>
+      <div class="wall-roof"></div>
+      <div class="wall-floor"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
