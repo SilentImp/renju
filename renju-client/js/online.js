@@ -1,6 +1,6 @@
 var socket = io.connect('http://localhost:1337/');
 var user = {};
-
+//
 socket.on('connect', function(){
   //TODO: put stuff on loggingin
   setInterval(function(){
@@ -10,6 +10,7 @@ socket.on('connect', function(){
     });
   },1000);
 });
+
 socket.on('userId', function(userId){
   user.id = userId;
   broadcast().available();

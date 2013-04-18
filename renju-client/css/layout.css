@@ -14,8 +14,19 @@ html{
   perspective: 900px;
   }
 
+#templates,
+.popup,
+.screen{
+  display: none;
+  }
+
+.loading-screen{
+  display: block;
+  }
+
 a{
   outline:none;
+  text-decoration: none;
   }
 
 .game-screen{
@@ -28,18 +39,6 @@ a{
   -webkit-transform-style: preserve-3d;
   -moz-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  }
-
-.loading-screen{
-  display: block;
-  }
-
-.start-screen,
-.game-screen,
-#templates,
-.win-screen,
-.standoff{
-  display: none;
   }
 
 body>.board-front{

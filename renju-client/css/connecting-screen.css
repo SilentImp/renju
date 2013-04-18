@@ -1,44 +1,33 @@
-.game-status{
-  display: none;
-  position: fixed;
+.connecting-screen{
+  position: absolute;
   top: 0;
   left: 0;
-  right: 0;
   bottom: 0;
-  z-index: 2000;
-  background: rgba(0,0,0,.5);
+  right: 0;
+  margin: auto;
+  background:url('../img/boke.jpg') 50% 50% repeat;
+  z-index: 100;
   }
-  .game-status .placeholder{
-    display: inline-block;
-    }
-  .game-status .word{
-    display: inline-block;
-    vertical-align: middle;
-    font: 24px/44px serif;
-    margin: 0 10px;
-    }
-  .game-status .wrapper{
+  .connecting-screen .wrapper{
     font-size: 0;
     height: 64px;
     position: fixed;
     margin: auto;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    left: 20px;
+    right: 20px;
+    top: 20px;
+    bottom: 20px;
     text-align: center;
     }
-  .game-status .player{
-    margin: 0;
-    }
-  .game-status .inner-wrapper{
+  .connecting-screen .inner-wrapper{
     position: relative;
     padding: 10px;
     display: inline-block;
     background-color: rgba(255,255,255,.75);
-    white-space: nowrap;
+    text-align: left;
+    font: 24px/44px serif;
     }
-  .game-status .inner-wrapper:after{
+  .connecting-screen .inner-wrapper:after{
     content:".";
     display: block;
     position: absolute;

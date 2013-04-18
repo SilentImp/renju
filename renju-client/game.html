@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>Renju</title>
   <link rel="stylesheet" href="css/common.css">
+  <script src="http://renju.in:1337/socket.io/socket.io.js"></script>
   <script src="js/PxLoader.js"></script>
   <script src="js/PxLoaderImage.js"></script>
   <script src="js/jquery.min.js"></script>
@@ -14,6 +15,32 @@
   <script src="js/renjuController.js"></script>
 </head>
 <body>
+
+<div class="challenge popup">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder">
+
+        <div class="player">
+          <div class="details">
+            <p class="avatar" data-avatar-x="23" data-avatar-y="115" style="background-position: -23px -115px"></p>
+            <p class="name">Муфаса</p>
+          </div>
+          <nav>
+            <a href="#pass" class="pass">Пас</a>
+            <a href="#remove" class="remove">Я не я!</a>
+          </nav>
+        </div>
+
+      </div>
+      <div class="word">предлагает вам сыграть</div>
+      <nav>
+        <a href="#accept" class="accept">Ну давай!</a>
+        <a href="#decline" class="decline">Да ну нафиг…</a>
+      </nav>
+    </div>
+  </div>
+</div>
 
 <div class="game-status popup">
   <div class="wrapper">
@@ -48,7 +75,7 @@
   <div class="wrapper">
     <div class="inner-wrapper">
       <div class="placeholder"></div>
-      <div class="word">не хочет. Ты не вариант.</div>
+      <div class="word">не хочет. Ты — не вариант.</div>
       <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
     </div>
   </div>
@@ -63,6 +90,14 @@
       <div class="play-first word">и будет ходить первой.</div>
       <div class="play-second word">и будет ходить второй.</div>
       <div class="turn">Тот кто ходит первым что бы победить должен построить в ряд ровно 5 церквей, ни больше, ни меньше, а тот, кто ходит вторым сможет победить построив в ряд любое количество борделей большее 4.</div>
+    </div>
+  </div>
+</div>
+
+<div class="connecting-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      Происходит подключение к серверу
     </div>
   </div>
 </div>
@@ -96,7 +131,7 @@
       <fieldset>
         <a href="#" tabindex="0" class="avatar"></a>
         <label for="player-1-name">Я</label>
-        <input  tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
+        <input autocomplete="off" tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
         <button tabindex="2" type="submit">Я все сказал!</button>
       </fieldset>
     </form>
@@ -143,7 +178,7 @@
       <fieldset>
         <a tabindex="0" href="#" class="avatar"></a>
         <label for="player-1-name">Я</label>
-        <input tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
+        <input autocomplete="off" tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
         <button tabindex="2" type="submit">Я все сказал!</button>
       </fieldset>
       <p class="about">
@@ -156,7 +191,7 @@
       <fieldset>
         <a tabindex="3" href="#" class="avatar"></a>
         <label for="player-2-name">Я</label>
-        <input  tabindex="4" required="required" type="text" class="player-name" id="player-2-name" placeholder="Джанго" value="">
+        <input autocomplete="off" tabindex="4" required="required" type="text" class="player-name" id="player-2-name" placeholder="Джанго" value="">
         <button  tabindex="5" type="submit">Я все сказал!</button>
       </fieldset>
       <p class="about">

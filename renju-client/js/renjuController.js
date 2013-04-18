@@ -1,22 +1,15 @@
 (function(global){
 
-  function Player(num){
+  // Пользователь
+  function Player(){
     this.player = Handlebars.compile($("#player").html());
     this.avatar = {
       x:0,
       y:0
     };
     this.name = '';
-    this.id = Math.floor(Math.random()*100000)*Math.floor(Math.random()*100000);
-    this.first==false;
-    if(num==1){
-      this.first==true;
-    }
+    this.id = Math.round(Math.random()*10000)*Math.round(Math.random()*10000);
   }
-
-  Player.prototype.turn = function(event){
-    this.domPlayer.toggleClass('selected');
-  };
 
   Player.prototype.getHtml = function(){
     return this.player({
@@ -28,24 +21,20 @@
     });
   };
 
-  Player.prototype.init = function(){
-    $('.information').append(this.player({
-      name: this.name,
-      x: this.avatar.x,
-      y: this.avatar.y,
-      first: this.first,
-      id: this.id
-    }));
-    this.domPlayer = $('#'+this.id);
-  };
-
+  // Ячейка на карте
   function Place(){
     this.player = null;
     this.building = null;
     this.level = null;
   }
 
+  // Контроллер игры
   function renjuController(){
+
+    this.server = 'http://178.79.181.157:1337/';
+    this.socket = null;
+    this.onLineUserList = [];
+    this.onLineUser = new Player;
 
     //Всякое
     this.turn = 0;
@@ -70,6 +59,7 @@
     this.avatar_icons =  this.avatar_popup.find('.icons');
 
     //Экраны
+    this.connecting_screen =            $('.connecting-screen');
     this.decline_screen =               $('.decline-screen');
     this.quit_screen =                  $('.quit-screen');
     this.lost_screen =                  $('.lost-screen');
@@ -91,9 +81,9 @@
     this.start_screen.find('.hotseat').on('click',$.proxy(this.hotseat,this));
 
     //Экраны состояния
-    this.decline_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
-    this.quit_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
-    this.lost_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
+    this.decline_screen.find('.ok').on('click',$.proxy(this.connectToServer,this));
+    this.quit_screen.find('.ok').on('click',$.proxy(this.connectToServer,this));
+    this.lost_screen.find('.ok').on('click',$.proxy(this.connectToServer,this));
 
     this.see_game_screen.on('click',$.proxy(this.endGame,this));
     this.win_screen.find('.replay').on('click',$.proxy(this.startHotseatGame,this));
@@ -114,7 +104,7 @@
     this.create_two_users_screen.find('.confirm').on('click',$.proxy(this.startHotseatGame,this));
 
     //Cоздаем онлайн
-    this.create_online_user_screen.find('.confirm').on('click',$.proxy(this.selectPartner,this));
+    this.create_online_user_screen.find('.confirm').on('click',$.proxy(this.connectToServer,this));
 
     //Возврат к настройкам онлайн пользователя
     this.user_list_screen.find('.cancel').on('click',$.proxy(this.backToOnLineUser,this));
@@ -157,11 +147,21 @@
     this.openScreen(this.create_online_user_screen);
   };
 
-  //Создаем пользователя для онлайн игры
-  renjuController.prototype.selectPartner = function(event){
-    if(typeof event !== 'undefined'){
-      event.preventDefault();
+  renjuController.prototype.connectToServer = function(event){
+
+    if(this.socket !== null){
+      this.selectPartner();
+      return;
     }
+
+    this.openScreen(this.connecting_screen);
+    this.socket = io.connect(this.server);
+    this.socket.on('connect',$.proxy(this.selectPartner,this));
+
+  };
+
+  // Выбираем противника
+  renjuController.prototype.selectPartner = function(data){
 
     p1 = $('.create-online-user-screen .online-player');
 
@@ -170,7 +170,6 @@
     this.online_player.first = true;
     this.online_player.avatar.x = p1.find('.avatar').attr('data-avatar-x');
     this.online_player.avatar.y = p1.find('.avatar').attr('data-avatar-y');
-    this.online_player.init();
 
     this.user_list_screen.find('.players').html();
 
@@ -210,7 +209,7 @@
 
     this.openScreen(this.request_screen);
 
-    window.setTimeout($.proxy(function(){this.playerDecline(player)},this),2000);
+    window.setTimeout($.proxy(function(){this.playerDecline(player)},this),3500);
   };
 
   renjuController.prototype.renderUserList = function(players){
@@ -229,7 +228,6 @@
     this.player1.first = true;
     this.player1.avatar.x = p1.find('.avatar').attr('data-avatar-x');
     this.player1.avatar.y = p1.find('.avatar').attr('data-avatar-y');
-    this.player1.init();
 
     this.user_list_screen.find('.player-holder').html(this.player1.getHtml());
     playersWrapper.find('.player').on('click',$.proxy(this.sendRequest,this));
@@ -551,14 +549,11 @@
   //Окончание хода в хотсит
   renjuController.prototype.endTurn = function(){
     this.turn++;
-    this.player1.turn();
-    this.player2.turn();
+    this.p1dom.toggleClass('selected');
+    this.p2dom.toggleClass('selected');
     if(this.turn==6){
       this.game_screen.find('.pass').css('display','inline-block');
     }
-    //УДАЛИТЬ!
-
-    this.showGameStatus(this.player1);
   };
 
   ///Пас в хотсит
@@ -620,13 +615,17 @@
     this.player1.first = true;
     this.player1.avatar.x = p1.find('.avatar').attr('data-avatar-x');
     this.player1.avatar.y = p1.find('.avatar').attr('data-avatar-y');
-    this.player1.init();
 
     this.player2 = new Player;
     this.player2.name = p2.find('.name').text();;
     this.player2.avatar.x = p2.find('.avatar').attr('data-avatar-x');
     this.player2.avatar.y = p2.find('.avatar').attr('data-avatar-y');
-    this.player2.init();
+
+    var information = this.game_screen.find('.information');
+    information.append(this.player1.getHtml());
+    information.append(this.player2.getHtml());
+    this.p1dom = information.find('.player-1');
+    this.p2dom = information.find('.player-2');
 
     $('.player .pass').on('click',$.proxy(this.pass,this));
     $('.standoff .ok').on('click',$.proxy(this.startScreen,this));
@@ -652,7 +651,7 @@
     input[0].setCustomValidity("");
   };
 
-  //Создаем пользователя хотсит
+  //Создаем пользователя
   renjuController.prototype.createUser = function(event){
     event.preventDefault();
     var form = $(event.currentTarget),
@@ -693,10 +692,12 @@
       $('#'+id).find('.remove').on('click',$.proxy(this.removeUser,this));
 
       if(forms_count==2){
+        // Хотсит
         if(this.create_two_users_screen.find('.player').length==2){
           this.create_two_users_screen.find('.confirm').show();
         }
       }else{
+        // OnLine
         this.create_online_user_screen.find('.confirm').show();
       }
     };
@@ -780,8 +781,8 @@
   };
 
   renjuController.prototype.openScreen = function(game_screen){
-    $('.screen, .popup').hide();
-    game_screen.show();
+    $('.screen, .popup').stop().hide();
+    game_screen.stop().show();
   };
 
   function onDomReady(){

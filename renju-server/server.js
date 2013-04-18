@@ -2,7 +2,7 @@ var app = require('http').createServer(handler)
   , io = require('socket.io').listen(app)
   , fs = require('fs')
 
-app.listen(1337);
+app.listen(1337, '178.79.181.157');
 
 var users = [];
 
