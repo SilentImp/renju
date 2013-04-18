@@ -781,8 +781,8 @@
   };
 
   renjuController.prototype.openScreen = function(game_screen){
-    $('.screen, .popup').stop().hide();
-    game_screen.stop().show();
+    $('.screen, .popup').stop().fadeOut();
+    game_screen.stop().fadeIn();
   };
 
   function onDomReady(){
