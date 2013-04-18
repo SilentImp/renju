@@ -50,16 +50,3 @@ function send(){
     return Math.floor(Math.random()*99999);
   }
 }
-
-
- // var sock = new SockJS('http://websaints.net:1337/');
- // sock.onopen = function() {
- //     console.log('open');
- // };
- // sock.onmessage = function(e) {
- //     console.log('message', e.data);
- // };
- // sock.onclose = function() {
- //     console.log('close');
- // };
- // sock.send('bojo');

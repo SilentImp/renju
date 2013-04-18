@@ -1,13 +1,13 @@
-.game .field .place .marked_win .wall-floor{
+.game-screen .field .place .marked_win .wall-floor{
   box-shadow: inset 0 0 0 50px rgba(0,154,172,.5);
-  /*box-shadow:0 0 25px 5px rgba(0,154,172,.75);*/
   }
 
-.game .field .place .marked_loose .wall-floor{
+.game-screen .field .place .marked_loose .wall-floor{
   box-shadow: inset 0 0 0 50px rgba(255,0,0,.5);
   }
 
 .board{
+  z-index:1;
   width: 750px;
   height: 750px;
   position: absolute;

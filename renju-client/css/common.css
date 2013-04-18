@@ -7,5 +7,12 @@
 @import url('information.css');
 @import url('standoff.css');
 @import url('start-screen.css');
-@import url('two-user-screen.css');
+@import url('user-creation-screen.css');
 @import url('win-screen.css');
+@import url('create-online-user-screen.css');
+@import url('user-list-screen.css');
+@import url('request-screen.css');
+@import url('player.css');
+@import url('status-screen.css');
+@import url('game-status.css');
+@import url('avatar.css');

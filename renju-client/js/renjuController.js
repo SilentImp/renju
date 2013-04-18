@@ -7,7 +7,7 @@
       y:0
     };
     this.name = '';
-    this.id = Math.floor(Math.random()*100000);
+    this.id = Math.floor(Math.random()*100000)*Math.floor(Math.random()*100000);
     this.first==false;
     if(num==1){
       this.first==true;
@@ -18,6 +18,16 @@
     this.domPlayer.toggleClass('selected');
   };
 
+  Player.prototype.getHtml = function(){
+    return this.player({
+      name: this.name,
+      x: this.avatar.x,
+      y: this.avatar.y,
+      first: this.first,
+      id: this.id
+    });
+  };
+
   Player.prototype.init = function(){
     $('.information').append(this.player({
       name: this.name,
@@ -26,9 +36,8 @@
       first: this.first,
       id: this.id
     }));
-    this.domPlayer = $(document.getElementById(this.id));
+    this.domPlayer = $('#'+this.id);
   };
-
 
   function Place(){
     this.player = null;
@@ -38,86 +47,220 @@
 
   function renjuController(){
 
-    this.avatar_popup =  $('.avatars-popup');
-    this.avatar_icons =  this.avatar_popup.find('.icons');
-    this.create_two_users_screen =  $('.two-user-screen');
-    this.see_game_screen =  $('.see-game-screen');
-    this.create_single_user_screen =  $('.single-user-screen');
-    this.start_screen = $('.start-screen');
-    this.standoff_screen = $('.standoff');
-    this.win_screen = $('.win-screen');
-    this.game_screen = $('.game');
-
-    this.see_game_screen.on('click',$.proxy(this.endGame,this));
-    this.win_screen.find('.ok').on('click',$.proxy(this.backToMain,this));
-    this.win_screen.find('.replay').on('click',$.proxy(this.replayGame,this));
-    this.game_screen.find('.quit').on('click',$.proxy(this.backToMain,this));
-
-    this.church_message = Handlebars.compile($("#church_message").html());
-    this.house_message = Handlebars.compile($("#house_message").html());
-    this.loose_message = Handlebars.compile($("#loose_message").html());
-
-    this.player = Handlebars.compile($("#player").html());
-    this.house = Handlebars.compile($("#house").html());
-    this.church = Handlebars.compile($("#church").html());
-    this.standoff_message = Handlebars.compile($("#standoff_message").html());
-
+    //Всякое
     this.turn = 0;
     this.place_size = 50;
     this.field = $('.field');
     this.board = this.field.find('.board');
     this.board_top = this.board.find('.board-top');
 
-    $('.start-screen .online').on('click',$.proxy(this.online,this));
-    $('.start-screen .hotseat').on('click',$.proxy(this.hotseat,this));
+    //Шаблоны
+    this.church_message = Handlebars.compile($("#church_message").html());
+    this.house_message = Handlebars.compile($("#house_message").html());
+    this.loose_message = Handlebars.compile($("#loose_message").html());
+    this.player = Handlebars.compile($("#player").html());
+    this.house = Handlebars.compile($("#house").html());
+    this.church = Handlebars.compile($("#church").html());
+    this.standoff_message = Handlebars.compile($("#standoff_message").html());
 
-    this.create_two_users_screen.find('.avatar').on('click',$.proxy(this.selectAvatar,this));
-    this.create_two_users_screen.find('.cancel').on('click',$.proxy(this.backToStart,this));
+
+    //Попап
+    this.game_status  =  $('.game-status');
+    this.avatar_popup =  $('.avatars-popup');
+    this.avatar_icons =  this.avatar_popup.find('.icons');
+
+    //Экраны
+    this.decline_screen =               $('.decline-screen');
+    this.quit_screen =                  $('.quit-screen');
+    this.lost_screen =                  $('.lost-screen');
+    this.request_screen =               $('.request-screen');
+    this.user_list_screen =             $('.user-list-screen');
+    this.see_game_screen =              $('.see-game-screen');
+    this.start_screen =                 $('.start-screen');
+    this.standoff_screen =              $('.standoff');
+    this.win_screen =                   $('.win-screen');
+    this.game_screen =                  $('.game-screen');
+    this.user_creation_screen =         $('.user-creation-screen');
+    this.create_two_users_screen =      $('.two-user-screen');
+    this.create_online_user_screen =    $('.create-online-user-screen');
+
+    //События
+
+    //Стартовый экран
+    this.start_screen.find('.online').on('click',$.proxy(this.online,this));
+    this.start_screen.find('.hotseat').on('click',$.proxy(this.hotseat,this));
+
+    //Экраны состояния
+    this.decline_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
+    this.quit_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
+    this.lost_screen.find('.ok').on('click',$.proxy(this.selectPartner,this));
+
+    this.see_game_screen.on('click',$.proxy(this.endGame,this));
+    this.win_screen.find('.replay').on('click',$.proxy(this.startHotseatGame,this));
+    this.win_screen.find('.ok').on('click',$.proxy(this.startScreen,this));
+    this.game_screen.find('.quit').on('click',$.proxy(this.startScreen,this));
+
+    //Общее для экранов создания пользователя
+    this.user_creation_screen.find('.avatar').on('click',$.proxy(this.selectAvatar,this));
+    this.user_creation_screen.find('.cancel').on('click',$.proxy(this.startScreen,this));
+    this.user_creation_screen.find('form').on('submit',$.proxy(this.createUser,this));
+    this.user_creation_screen.find('input').on('change',$.proxy(this.checkName,this));
+
+    //Попап
     this.avatar_popup.on('click',$.proxy(this.cancelAvatar,this));
     this.avatar_icons.on('click',$.proxy(this.updateAvatar,this));
-    this.create_two_users_screen.find('form').on('submit',$.proxy(this.createUser,this));
-    this.create_two_users_screen.find('input').on('change',$.proxy(this.checkName,this));
+
+    //Создаем хотсит
     this.create_two_users_screen.find('.confirm').on('click',$.proxy(this.startHotseatGame,this));
+
+    //Cоздаем онлайн
+    this.create_online_user_screen.find('.confirm').on('click',$.proxy(this.selectPartner,this));
+
+    //Возврат к настройкам онлайн пользователя
+    this.user_list_screen.find('.cancel').on('click',$.proxy(this.backToOnLineUser,this));
+    this.user_list_screen.find('.turn').on('click',$.proxy(this.switchTurn,this));
+
   }
 
-  renjuController.prototype.backToMain = function(event){
-    event.preventDefault();
-
-    this.see_game_screen.hide();
-    this.game_screen.hide();
-    this.win_screen.hide();
-    $('.game .board-top *').remove();
-    $('.game .information .player').remove();
-    this.start_screen.show();
+  renjuController.prototype.showGameStatus = function(player){
+    this.game_status.find('.placeholder').html(player.getHtml());
+    this.game_status.show();
   };
 
-  renjuController.prototype.replayGame = function(event){
-    event.preventDefault();
-
-    this.see_game_screen.hide();
-    this.game_screen.hide();
-    this.win_screen.hide();
-    $('.game .board-top *').remove();
-    $('.game .information .player').remove();
-
-    this.startHotseatGame(event);
+  // Пользователь отказался с вами играть
+  renjuController.prototype.playerDecline = function(player){
+    this.decline_screen.find('.placeholder').html(player);
+    this.openScreen(this.decline_screen);
   };
+
+  // Потеряли связь с пользователем
+  renjuController.prototype.playerLost = function(player){
+    this.quit_screen.find('.placeholder').html(player);
+    this.openScreen(this.quit_screen);
+  };
+
+  // Пользователь сбежал
+  renjuController.prototype.playerQuit = function(player){
+    this.lost_screen.find('.placeholder').html(player);
+    this.openScreen(this.lost_screen);
+  };
+
+  //меняем пользователей
+  renjuController.prototype.switchTurn = function(event){
+    event.preventDefault();
+    this.user_list_screen.find('.turn').toggleClass('selected');
+  };
+
+  //Создаем пользователя для онлайн игры
+  renjuController.prototype.backToOnLineUser = function(event){
+    event.preventDefault();
+    this.openScreen(this.create_online_user_screen);
+  };
+
+  //Создаем пользователя для онлайн игры
+  renjuController.prototype.selectPartner = function(event){
+    if(typeof event !== 'undefined'){
+      event.preventDefault();
+    }
+
+    p1 = $('.create-online-user-screen .online-player');
+
+    this.online_player = new Player;
+    this.online_player.name = p1.find('.name').text();
+    this.online_player.first = true;
+    this.online_player.avatar.x = p1.find('.avatar').attr('data-avatar-x');
+    this.online_player.avatar.y = p1.find('.avatar').attr('data-avatar-y');
+    this.online_player.init();
+
+    this.user_list_screen.find('.players').html();
+
+    this.openScreen(this.user_list_screen);
+
+    //TODO getUserList
+    var players = [],
+        foo_count = Math.ceil(Math.random()*100),
+        names = ['Муфаса', 'Джеймс', 'Му', 'Пу', 'Фумбаса', 'Зуррйир', 'Тутуола', 'Одафин', 'Танука', 'Мексиканец', 'Жабоглот', 'Муга', 'Муса', 'Амос', 'Аратара', 'Джанго', 'Намиби', 'Чучéлло', 'Бонга-Бонга', 'Ян', 'Флукс', 'Монтгомери'],
+        names_count = names.length;
+
+    while(foo_count--){
+      player = new Player;
+      player.name = names[Math.floor(Math.random()*names_count)];
+      player.avatar.x = Math.floor(Math.random()*9)*23;
+      player.avatar.y = Math.floor(Math.random()*7)*23;
+      player.id =
+      players.push(player);
+    }
+
+    this.renderUserList(players);
+    };
+
+  renjuController.prototype.sendRequest = function(event){
+    var player = $(event.currentTarget);
+
+    this.request_screen.find('.placeholder-1').html(this.player1.getHtml());
+    this.request_screen.find('.placeholder-2').html(player);
+    var turn = this.user_list_screen.find('.turn.selected');
+    if(turn.hasClass('first_player')){
+      this.request_screen.find('.play-first').show();
+      this.request_screen.find('.play-second').hide();
+    }else{
+      this.request_screen.find('.play-first').hide();
+      this.request_screen.find('.play-second').show();
+    }
+
+    this.openScreen(this.request_screen);
+
+    window.setTimeout($.proxy(function(){this.playerDecline(player)},this),2000);
+  };
+
+  renjuController.prototype.renderUserList = function(players){
+    var count = players.length,
+        wrapper = this.user_list_screen.find('.wrapper'),
+        playersWrapper = wrapper.find('.players');
+
+    while(count--){
+      playersWrapper.append(players[count].getHtml());
+    }
+    wrapper.css('background-image',"none");
+
+    var p1 = this.create_online_user_screen.find('.player');
+    this.player1 = new Player;
+    this.player1.name = p1.find('.name').text();
+    this.player1.first = true;
+    this.player1.avatar.x = p1.find('.avatar').attr('data-avatar-x');
+    this.player1.avatar.y = p1.find('.avatar').attr('data-avatar-y');
+    this.player1.init();
+
+    this.user_list_screen.find('.player-holder').html(this.player1.getHtml());
+    playersWrapper.find('.player').on('click',$.proxy(this.sendRequest,this));
+  };
+
+  //Создаем пользователя для онлайн игры
+  renjuController.prototype.online = function(event){
+    event.preventDefault();
+    var avatar = this.create_online_user_screen.find('form .avatar'),
+        x = Math.floor(Math.random()*9)*23,
+        y = Math.floor(Math.random()*7)*23;
+
+    $(avatar[0]).css({
+      'background-position':'-'+x+'px -'+y+'px'
+    }).attr('data-avatar-x',x).attr('data-avatar-y',y);
+
+    this.openScreen(this.create_online_user_screen);
+    this.create_online_user_screen.find('input').focus();
+    };
 
   renjuController.prototype.endGame = function(event){
     event.preventDefault();
-    this.game_screen.hide();
-    this.see_game_screen.hide();
     this.game_screen.find('.field').removeClass('played');
-    this.win_screen.show();
+    this.openScreen(this.win_screen);
   };
 
   renjuController.prototype.startHotseatGame = function(event){
     event.preventDefault();
-    this.create_two_users_screen.hide();
-    this.game_screen.show();
+    this.openScreen(this.game_screen);
     this.startGame();
   };
-
 
   renjuController.prototype.createHouse = function(event){
     var place = $(event.currentTarget),
@@ -142,7 +285,6 @@
     id = current_player.id;
 
     this.gameField[y][x] = place;
-    // console.log(this.gameField);
 
     win = false;
     loose = false;
@@ -397,26 +539,29 @@
     }
   };
 
+  //Ничья в хотсит
   renjuController.prototype.standoff = function(){
-    $('.game').hide().find('information *').remove();
-    $('.game .board-top *').remove();
-    $('.game .information .player').remove();
-    var standoff = $('.standoff');
-    standoff.prepend(this.standoff_message({
+    this.standoff_screen.find('.message').html(this.standoff_message({
       player1: this.player1.name,
       player2: this.player2.name
-    })).show();
+    }));
+    this.openScreen(this.standoff_screen);
   };
 
+  //Окончание хода в хотсит
   renjuController.prototype.endTurn = function(){
     this.turn++;
     this.player1.turn();
     this.player2.turn();
     if(this.turn==6){
-      $('.game .information .player .pass').css('display','inline-block');
+      this.game_screen.find('.pass').css('display','inline-block');
     }
+    //УДАЛИТЬ!
+
+    this.showGameStatus(this.player1);
   };
 
+  ///Пас в хотсит
   renjuController.prototype.pass = function(event){
     event.preventDefault();
 
@@ -427,6 +572,7 @@
     this.endTurn();
   };
 
+  //Генерируем игральную доску
   renjuController.prototype.generateBoard = function(){
     var h = 15,
         figure = null;
@@ -451,10 +597,13 @@
 
   };
 
-
+  //Начинаем игру в хотсит
   renjuController.prototype.startGame = function(){
     var p1 = this.create_two_users_screen.find('.player-1'),
         p2 = this.create_two_users_screen.find('.player-2');
+
+    this.game_screen.find('.information .player, .board-top *').remove();
+
     this.turn = 0;
     this.gameField = [];
     var v = 15
@@ -485,6 +634,7 @@
     this.generateBoard();
   };
 
+  //Проверяем подходит ли имя по формату в хотсит
   renjuController.prototype.checkName = function(event){
     event.preventDefault();
     var input = $(event.currentTarget),
@@ -502,22 +652,7 @@
     input[0].setCustomValidity("");
   };
 
-  renjuController.prototype.backToStart = function(event){
-    event.preventDefault();
-    this.create_single_user_screen.hide();
-    this.create_two_users_screen.hide();
-    // this.create_single_user_screen.find('form').each(function(){this.reset());
-    // this.create_two_users_screen.find('form').each(function(){this.reset()});
-    this.start_screen.show();
-    };
-
-  renjuController.prototype.online = function(event){
-    event.preventDefault();
-    return;
-    this.start_screen.hide();
-    this.create_single_user_screen.show();
-    };
-
+  //Создаем пользователя хотсит
   renjuController.prototype.createUser = function(event){
     event.preventDefault();
     var form = $(event.currentTarget),
@@ -550,10 +685,19 @@
       if(before.hasClass('player')){
         before.remove();
       }
+      var screen = form.parents('.user-creation-screen'),
+          forms = screen.find('form'),
+          forms_count = forms.length;
+
       form.hide().before(player);
       $('#'+id).find('.remove').on('click',$.proxy(this.removeUser,this));
-      if(this.create_two_users_screen.find('.player').length==2){
-        this.create_two_users_screen.find('.confirm').show();
+
+      if(forms_count==2){
+        if(this.create_two_users_screen.find('.player').length==2){
+          this.create_two_users_screen.find('.confirm').show();
+        }
+      }else{
+        this.create_online_user_screen.find('.confirm').show();
       }
     };
 
@@ -562,14 +706,13 @@
     var link = $(event.currentTarget),
         player = link.closest('.player'),
         form = player.next();
+        player.parent().find('.confirm').hide();
         player.remove();
         form.show();
-    this.create_two_users_screen.find('.confirm').hide();
   };
 
   renjuController.prototype.hotseat = function(event){
     event.preventDefault();
-    this.start_screen.hide();
 
     var avatar = this.create_two_users_screen.find('form .avatar'),
         x = Math.floor(Math.random()*9)*23,
@@ -590,7 +733,7 @@
       'background-position':'-'+x+'px -'+y+'px'
     }).attr('data-avatar-x',x).attr('data-avatar-y',y);
 
-    this.create_two_users_screen.show();
+    this.openScreen(this.create_two_users_screen);
     $('form:visible input:eq(0)').focus();
     };
 
@@ -620,9 +763,7 @@
 
   renjuController.prototype.startScreen = function(event){
     event.preventDefault();
-    $('.game').hide();
-    $('.standoff').hide();
-    $('.start-screen').show();
+    this.openScreen(this.start_screen);
   };
 
   renjuController.prototype.getTransform = function(element){
@@ -636,6 +777,11 @@
       transform ='';
     }
     return transform;
+  };
+
+  renjuController.prototype.openScreen = function(game_screen){
+    $('.screen, .popup').hide();
+    game_screen.show();
   };
 
   function onDomReady(){

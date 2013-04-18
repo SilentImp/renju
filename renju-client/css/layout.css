@@ -14,7 +14,11 @@ html{
   perspective: 900px;
   }
 
-.game{
+a{
+  outline:none;
+  }
+
+.game-screen{
   position: fixed;
   top: 0;
   left: 0;
@@ -31,7 +35,7 @@ html{
   }
 
 .start-screen,
-.game,
+.game-screen,
 #templates,
 .win-screen,
 .standoff{

@@ -31,7 +31,7 @@
     }
   .start-screen h2{
     z-index: 1;
-    color: rgba(0,154,172,.55);
+    color: rgba(0,154,172,.75);
     position: absolute;
     top: 50%;
     left: 0;
@@ -53,6 +53,7 @@
     left: 50%;
     top: 50%;
     margin-top: -10px;
+    margin-left: 1px;
     }
   .start-screen a.hotseat{
     margin-top: -10px;

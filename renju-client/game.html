@@ -15,14 +15,102 @@
 </head>
 <body>
 
-<div class="loading-screen">
+<div class="game-status popup">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">в задумчивости</div>
+    </div>
+  </div>
+</div>
+
+<div class="lost-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">потерялся. бывает.</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="quit-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">cбежал. Ты — Джигурда.</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="decline-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">не хочет. Ты не вариант.</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="request-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder-1"></div>
+      <div class="word">вызывает на поединок</div>
+      <div class="placeholder-2"></div>
+      <div class="play-first word">и будет ходить первой.</div>
+      <div class="play-second word">и будет ходить второй.</div>
+      <div class="turn">Тот кто ходит первым что бы победить должен построить в ряд ровно 5 церквей, ни больше, ни меньше, а тот, кто ходит вторым сможет победить построив в ряд любое количество борделей большее 4.</div>
+    </div>
+  </div>
+</div>
+
+<div class="user-list-screen screen">
+  <div class="wrapper">
+    <nav class="common-navigation">
+      <a href="#cancel" class="cancel">Вообще то я передумал! Бежи-и-и-м!</a>
+    </nav>
+    <header>
+      <b class="word">Я</b>
+      <div class="player-holder"></div>
+      <b class="word">и всегда хожу</b>
+      <a href="#" class="first_player turn">первым</a>
+      <a href="#" class="second_player turn selected">вторым</a>
+      <b class="word">и вызываю:</b>
+    </header>
+    <div class="players">
+
+    </div>
+  </div>
+</div>
+
+<div class="create-online-user-screen user-creation-screen screen">
+  <div class="wrapper">
+    <nav>
+      <a href="#cancel" class="cancel">Я передумал! Бежи-и-и-м!</a>
+      <a href="#confirm" class="confirm">Вперед!</a>
+    </nav>
+    <form action="/create_user/" method="post" class="online-player">
+      <fieldset>
+        <a href="#" tabindex="0" class="avatar"></a>
+        <label for="player-1-name">Я</label>
+        <input  tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
+        <button tabindex="2" type="submit">Я все сказал!</button>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<div class="loading-screen screen">
   <h1>Грузюся</h1>
   <div class="progress"><div id="loaded"></div></div>
 </div>
 
-<div class="game">
+<div class="game-screen screen">
   <div class="information">
-    <a href="#quit" class="quit">Сбежать</a>
+    <a href="#quit" class="quit">Бежи-и-им!</a>
   </div>
   <div class="board-front"></div>
   <div class="field">
@@ -36,7 +124,7 @@
   </div>
 </div>
 
-<div class="win-screen">
+<div class="win-screen screen">
   <div class="message"></div>
   <nav>
     <a href="#replay" class="replay">Давай еще раз!</a>
@@ -44,7 +132,7 @@
   </nav>
 </div>
 
-<div class="two-user-screen">
+<div class="two-user-screen user-creation-screen screen">
   <div class="wrapper">
     <nav>
       <a href="#cancel" class="cancel">Я передумал! Бежи-и-и-м!</a>
@@ -53,10 +141,10 @@
 
     <form action="/create_user/" method="post" class="first-user">
       <fieldset>
-        <div class="avatar"></div>
+        <a tabindex="0" href="#" class="avatar"></a>
         <label for="player-1-name">Я</label>
-        <input required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
-        <button type="submit">Я все сказал!</button>
+        <input tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Муфаса" value="">
+        <button tabindex="2" type="submit">Я все сказал!</button>
       </fieldset>
       <p class="about">
         Я хожу первым, но могу победить, только если построю 5 храмов в ряд.
@@ -66,10 +154,10 @@
 
     <form action="/create_user/" method="post" class="second-user">
       <fieldset>
-        <div class="avatar"></div>
+        <a tabindex="3" href="#" class="avatar"></a>
         <label for="player-2-name">Я</label>
-        <input required="required" type="text" class="player-name" id="player-2-name" placeholder="Джанго" value="">
-        <button type="submit">Я все сказал!</button>
+        <input  tabindex="4" required="required" type="text" class="player-name" id="player-2-name" placeholder="Джанго" value="">
+        <button  tabindex="5" type="submit">Я все сказал!</button>
       </fieldset>
       <p class="about">
         Я хожу вторым, но могу строить свои бордели так, как мне того хочется.
@@ -80,12 +168,9 @@
 </div>
 
 
+<div class="avatars-popup popup"><div class="icons"></div></div>
 
-<div class="avatars-popup"><div class="icons"></div></div>
-
-<div class="single-user-screen"></div>
-
-<div class="start-screen">
+<div class="start-screen screen">
   <h2>Renju</h2>
   <nav>
     <a href="#online" class="online">
@@ -104,13 +189,14 @@
   </nav>
 </div>
 
-<div class="standoff">
+<div class="standoff screen">
+  <p class="message"></p>
   <nav>
     <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
   </nav>
 </div>
 
-<div class="see-game-screen"></div>
+<div class="see-game-screen screen"></div>
 
 <div id="templates">
   <div id="loose_message">
@@ -131,12 +217,10 @@
     убежал в закат. {{player1}} лопнул от злости.
   </div>
   <div id="standoff_message">
-    <p class="message">
-      {{player1}} заключил мир с {{player2}} и жили они долго и счастливо,
-      приблизительно три с половиной недели, пока {{player1}} не убил
-      {{player2}} во сне ядовитым кинжалом и не был по нелепой случайности
-      затоптан стаей диких медведей-осеменителей приблизительно неделю спустя.
-    </p>
+    {{player1}} заключил мир с {{player2}} и жили они долго и счастливо,
+    приблизительно три с половиной недели, пока {{player1}} не убил
+    {{player2}} во сне ядовитым кинжалом и не был по нелепой случайности
+    затоптан стаей диких медведей-осеменителей приблизительно неделю спустя.
   </div>
   <div id="player">
     {{#if first}}
