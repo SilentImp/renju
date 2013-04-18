@@ -3,5 +3,5 @@
     die();
   }
   chdir('../');
-  exec("git pull");
+  exec("git commit -a -m'autocommit-on-refresh' && git pull");
 ?>
