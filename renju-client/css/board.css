@@ -1,4 +1,3 @@
-
 .game-screen{
   position: fixed;
   top: 0;
@@ -18,9 +17,9 @@
       -ms-transition: -ms-transform .4s ease;
           transition: transform .4s ease;
 
-  -webkit-transform: rotateX(0) scale(.7) scaleZ(.7) translateZ(-150px);
-  -moz-transform: rotateX(0) scale(.7) scaleZ(.7) translateZ(-150px);
-  transform: rotateX(0) scale(.70) scaleZ(.7) translateZ(-150px);
+  -webkit-transform: rotateX(0) scale(.7) scaleZ(.7) translateZ(-200px) !important;
+  -moz-transform: rotateX(0) scale(.7) scaleZ(.7) translateZ(-200px) !important;
+  transform: rotateX(0) scale(.70) scaleZ(.7) translateZ(-200px) !important;
   }
 
 .field{
