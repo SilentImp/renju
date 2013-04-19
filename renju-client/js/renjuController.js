@@ -1,17 +1,5 @@
 (function(global){
 
-  // Пользователь
-  function OnLineUser(){
-    return {
-      avatar: {
-        x:0,
-        y:0
-        },
-      name: '',
-      id: null
-    }
-  }
-
 
   // Пользователь
   function Player(){
@@ -47,7 +35,7 @@
     this.server = 'http://178.79.181.157:1337/';
     this.socket = null;
     this.onLineUserList = [];
-    this.online_user = new OnLineUser;
+    this.online_user = new Player;
 
     //Всякое
     this.turn = 0;
@@ -217,6 +205,7 @@
 
   renjuController.prototype.sendUserData = function(user_id){
     this.online_user.id = user_id;
+    console.log(this.online_user);
     this.socket.emit('user',this.online_user);
     this.user_id_def.resolve();
   };
@@ -765,6 +754,9 @@
         }
       }else{
         // OnLine
+        this.online_user.name = name;
+        this.online_user.avatar.x = x;
+        this.online_user.avatar.y = y;
         this.create_online_user_screen.find('.confirm').show();
       }
     };
