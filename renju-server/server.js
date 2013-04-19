@@ -26,6 +26,7 @@ io.sockets.on('connection', function (socket) {
     usr.sock = undefined;
     socket.broadcast.emit('broadcast', usr);
   });
+
   socket.on('disconnect', function(){
     if(!socket[userId]) return;
     users[userId].sock = undefined;
@@ -39,6 +40,7 @@ io.sockets.on('connection', function (socket) {
   })
   socket.on('broadcast', function(data){
     if(data.status && data.origin && data.origin.id){
+      users[data.origin.id].sock = undefined;
       users[data.origin.id].status = data.status;
     }
     socket.broadcast.emit('broadcast', data);
