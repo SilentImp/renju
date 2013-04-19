@@ -43,6 +43,8 @@
     this.board = this.field.find('.board');
     this.board_top = this.board.find('.board-top');
 
+    this.boardTransform=null;
+
     //Шаблоны
     this.church_message = Handlebars.compile($("#church_message").html());
     this.house_message = Handlebars.compile($("#house_message").html());
@@ -73,6 +75,9 @@
     this.user_creation_screen =         $('.user-creation-screen');
     this.create_two_users_screen =      $('.two-user-screen');
     this.create_online_user_screen =    $('.create-online-user-screen');
+
+    $('.rotation .handle').draggable({ containment: "parent", scroll: false, drag: $.proxy(this.rotateBoard,this)});
+    $('.zoom .handle').draggable({ containment: "parent", scroll: false, drag: $.proxy(this.zoomBoard,this)});
 
     //События
 
@@ -111,6 +116,27 @@
     this.user_list_screen.find('.turn').on('click',$.proxy(this.switchTurn,this));
 
   }
+
+  renjuController.prototype.rotateBoard = function(event,obj){
+    var helper = obj.helper,
+        field = helper.parent(),
+        x = Math.max(Math.min(event.clientX - field.offset().left, 100),0),
+        y = Math.max(Math.min(event.clientY - field.offset().top, 100),0),
+        dx = Math.round(-20 + x*40/100),
+        dy = Math.round(-30 + y*60/100);
+    this.currentRotate = ' rotateX('+dy+'deg)'+' rotateZ('+dx+'deg)';
+    this.field[0].style[Modernizr.prefixed('transform')] = this.boardTransform + this.currentRotate + this.currentScale;
+  };
+
+  renjuController.prototype.zoomBoard = function(event,obj){
+    var helper = obj.helper,
+        field = helper.parent(),
+        x = Math.max(Math.min(event.clientX - field.offset().left, 100),0),
+        scale = 0.5+ x/100;
+
+    this.currentScale = ' scaleX('+scale+')'+' scaleY('+scale+')'+' scaleZ('+scale+')';
+    this.field[0].style[Modernizr.prefixed('transform')] = this.boardTransform + this.currentRotate + this.currentScale;
+  };
 
   renjuController.prototype.showGameStatus = function(player){
     this.game_status.find('.placeholder').html(player.getHtml());
@@ -629,6 +655,12 @@
 
     $('.player .pass').on('click',$.proxy(this.pass,this));
     $('.standoff .ok').on('click',$.proxy(this.startScreen,this));
+
+    if(this.boardTransform==null){
+      this.boardTransform = this.getTransform(this.field[0]);
+      this.currentRotate='';
+      this.currentScale='';
+    }
 
     this.generateBoard();
   };

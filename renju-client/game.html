@@ -5,13 +5,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>Renju</title>
   <link rel="stylesheet" href="css/common.css">
+  <script src="js/modernizr.js"></script>
   <script src="http://renju.in:1337/socket.io/socket.io.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-ui.min.js"></script>
   <script src="js/PxLoader.js"></script>
   <script src="js/PxLoaderImage.js"></script>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/preloading.js"></script>
   <script src="js/handlebars.js"></script>
-  <script src="js/modernizr.js"></script>
+  <script src="js/preloading.js"></script>
+
   <script src="js/renjuController.js"></script>
 </head>
 <body>
@@ -20,7 +22,6 @@
   <div class="wrapper">
     <div class="inner-wrapper">
       <div class="placeholder">
-
         <div class="player">
           <div class="details">
             <p class="avatar" data-avatar-x="23" data-avatar-y="115" style="background-position: -23px -115px"></p>
@@ -31,7 +32,6 @@
             <a href="#remove" class="remove">Я не я!</a>
           </nav>
         </div>
-
       </div>
       <div class="word">предлагает вам сыграть</div>
       <nav>
@@ -116,7 +116,6 @@
       <b class="word">и вызываю:</b>
     </header>
     <div class="players">
-
     </div>
   </div>
 </div>
@@ -146,15 +145,19 @@
 <div class="game-screen screen">
   <div class="information">
     <a href="#quit" class="quit">Бежи-и-им!</a>
+    <div class="rotation">
+      <div class="handle icon-move"></div>
+    </div>
+    <div class="zoom">
+      <div class="handle icon-zoom-in"></div>
+    </div>
   </div>
-  <div class="board-front"></div>
   <div class="field">
     <div class="board">
       <div class="board-top"></div>
       <div class="board-front"></div>
       <div class="board-left"></div>
       <div class="board-right"></div>
-      <div class="board-back"></div>
     </div>
   </div>
 </div>
@@ -173,7 +176,6 @@
       <a href="#cancel" class="cancel">Я передумал! Бежи-и-и-м!</a>
       <a href="#confirm" class="confirm">Вперед!</a>
     </nav>
-
     <form action="/create_user/" method="post" class="first-user">
       <fieldset>
         <a tabindex="0" href="#" class="avatar"></a>
@@ -186,7 +188,6 @@
         Не больше, не меньше.
       </p>
     </form>
-
     <form action="/create_user/" method="post" class="second-user">
       <fieldset>
         <a tabindex="3" href="#" class="avatar"></a>
@@ -199,9 +200,7 @@
       </p>
     </form>
   </div>
-
 </div>
-
 
 <div class="avatars-popup popup"><div class="icons"></div></div>
 

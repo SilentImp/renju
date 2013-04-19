@@ -4,6 +4,48 @@
   left: 0;
   right: 0;
   }
+  .information .zoom{
+
+    position: fixed;
+    top: 204px;
+    right: 20px;
+    width: 100px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, .05);
+    }
+    .information .zoom .handle{
+      width: 30px;
+      height: 30px;
+      display: block;
+      color: #fff;
+      background: #000 url('../img/zoom.png') 50% 50% no-repeat;
+      -webkit-background-size: 15px;
+           -o-background-size: 15px;
+              background-size: 15px;
+      cursor: pointer;
+      left: 25px;
+      }
+  .information .rotation{
+    position: fixed;
+    top: 84px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(0, 0, 0, .05);
+    }
+    .information .rotation .handle{
+      width: 30px;
+      height: 30px;
+      display: block;
+      color: #fff;
+      background: #000 url('../img/rotate.png') 50% 50% no-repeat;
+      -webkit-background-size: 15px;
+           -o-background-size: 15px;
+              background-size: 15px;
+      cursor: pointer;
+      top: 30px;
+      left: 35px;
+      }
   .information .quit:hover{
     background: rgba(0,165,0,.75);
     }
@@ -23,7 +65,8 @@
     right: 20px;
     white-space: nowrap;
     font:14px/44px serif;
-    padding:0 20px;
+    width:100px;
+    text-align: center;
     text-decoration: none;
     }
     .information .quit:after{
