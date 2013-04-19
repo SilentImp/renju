@@ -34,7 +34,7 @@
 
     this.server = 'http://178.79.181.157:1337/';
     this.socket = null;
-    this.onLineUserList = [];
+    this.onLineUserList = new Array;
     this.online_user = new Player;
 
     //Всякое
@@ -57,6 +57,7 @@
 
 
     //Попап
+    this.challenge_popup  =  $('.challenge.popup');
     this.game_status  =  $('.game-status');
     this.avatar_popup =  $('.avatars-popup');
     this.avatar_icons =  this.avatar_popup.find('.icons');
@@ -115,8 +116,40 @@
     //Возврат к настройкам онлайн пользователя
     this.user_list_screen.find('.cancel').on('click',$.proxy(this.backToOnLineUser,this));
     this.user_list_screen.find('.turn').on('click',$.proxy(this.switchTurn,this));
-
   }
+
+  renjuController.prototype.set_message = function(msgObj){
+    var baseMsg = {name:"someName", origin: this.online_user};
+    return _(baseMsg).extend(msgObj);
+  };
+
+  renjuController.prototype.broadcast = function(){
+    return {
+      available: function(){
+        this.socket.emit('broadcast', this.set_message({'status':'available', 'userid': this.online_user.id}));
+      },
+      busy: function(){
+        this.socket.emit('broadcast', this.set_message({'status':'busy', 'userid': this.online_user.id}))
+      }
+    }
+  };
+
+  renjuController.prototype.send = function(){
+    return {
+      message: $.proxy(function(userId, msgObj){
+        var msgObj = _({'type':'message', 'to':userId}).extend(msgObj);
+        this.socket.emit('message', this.set_message(msgObj));
+      },this),
+      reply: $.proxy(function(msgIn, msgOut){
+        msgOut = msgOut || {};
+        msgOut.to = msgIn.origin.id;
+        this.socket.emit('message', _(msgIn).extend(msgOut));
+      },this)
+    }
+    function getTransactionId(){
+      return Math.floor(Math.random()*99999);
+    }
+  };
 
   renjuController.prototype.rotateBoard = function(event,obj){
     var helper = obj.helper,
@@ -189,6 +222,9 @@
 
     this.socket.on('userId',$.proxy(this.sendUserData,this));
     this.socket.on('users',$.proxy(this.getUsersList,this));
+    this.socket.on('broadcast',$.proxy(this.broadcasted,this));
+    this.socket.on('message',$.proxy(this.readMessage,this));
+    $(window).on('close',$.proxy(this.pageClosed,this));
 
     $.when(
         this.user_id_def,
@@ -198,8 +234,86 @@
       );
   };
 
+  renjuController.prototype.pageClosed = function(event){
+    console.log('cообщаем что закрываем сообщение');
+    alert('Сбегун!');
+  };
+
+  renjuController.prototype.readMessage = function(msgObj){
+    switch(msgObj.game_event){
+        case 'challenge':
+          //Вам бросили вызов, вы можете принять или отказаться
+          console.log('вам бросили вызов', msgObj);
+          var foe = msgObj.origin;
+          if(msgObj.first == true){
+            this.challenge_popup.find('.first').show();
+            this.challenge_popup.find('.second').hide();
+          }else{
+            this.challenge_popup.find('.first').hide();
+            this.challenge_popup.find('.second').show();
+          }
+          this.challenge_popup.find('.placeholder').html(this.player({
+            name: foe.name,
+            id: foe.id,
+            x: foe.avatar.x,
+            y: foe.avatar.y
+          }));
+          this.challenge_popup.show();
+          this.challengeObj = msgObj;
+          // reply = {
+          //   "game_event":"challenge accepted"
+          // };
+          // reply = {
+          //   "game_event":"challenge declined"
+          // };
+          // this.send().reply(msgObj,reply);
+          break;
+        case 'challenge accepted':
+          //С вами согласились играть
+          break;
+        case 'challenge declined':
+          //С вами отказались играть
+          break;
+        case 'pass':
+          //Пасс
+          break;
+        case 'move':
+          //Ход
+          break;
+        case 'quit':
+          //Противник вышел из игры
+          break;
+      }
+  };
+
+  renjuController.prototype.broadcasted = function(msgObj){
+    switch(msgObj.status){
+      case 'available':
+        this.onLineUserList.push(msgObj);
+        this.user_list_screen.find('.players').prepend(this.player({
+          name: msgObj.name,
+          x: msgObj.avatar.x,
+          y: msgObj.avatar.y,
+          id: msgObj.id
+        }));
+        this.user_list_screen.find('.players #'+msgObj.id).on('click',$.proxy(this.sendRequest,this));
+        break;
+      case 'dead':
+      case 'busy':
+        this.user_list_screen.find('.players #'+msgObj.id).remove();
+        var index = this.onLineUserList.length;
+        while(index--){
+          if(this.onLineUserList[index].id==msgObj.id){
+            this.onLineUserList.splice(index,1);
+          }
+        }
+        break;
+    }
+  };
+
   renjuController.prototype.getUsersList = function(users){
-    this.renderUserList(users);
+    this.onLineUserList = users._wrapped;
+    this.renderUserList(this.onLineUserList);
     this.users_def.resolve();
   };
 
@@ -214,23 +328,49 @@
     this.openScreen(this.user_list_screen);
   };
 
-  renjuController.prototype.sendRequest = function(event){
-    var player = $(event.currentTarget);
+  renjuController.prototype.findUserById = function(id){
+    var index = this.onLineUserList.length;
+    while(index--){
+      if(this.onLineUserList[index].id==id){
+        return this.onLineUserList[index];
+      }
+    }
+    return null;
+  };
 
-    this.request_screen.find('.placeholder-1').html(this.player1.getHtml());
-    this.request_screen.find('.placeholder-2').html(player);
-    var turn = this.user_list_screen.find('.turn.selected');
+  renjuController.prototype.sendRequest = function(event){
+
+    var player  = $(event.currentTarget),
+        turn    = this.user_list_screen.find('.turn.selected'),
+        id = player.attr('id'),
+        foe = this.findUserById(id);
+
+    this.request_screen.find('.placeholder-1').html(this.player({
+          name: this.online_user.name,
+          x:    this.online_user.avatar.x,
+          y:    this.online_user.avatar.y,
+          id:   this.online_user.id
+        }));
+    this.request_screen.find('.placeholder-2').html(this.player({
+          name: foe.name,
+          x: foe.avatar.x,
+          y: foe.avatar.y,
+          id: foe.id
+        }));
+
     if(turn.hasClass('first_player')){
+      console.log('вызов', player.attr('id'), {"game_event":"challenge","first":true});
+      this.send().message(player.attr('id'), {"game_event":"challenge","first":true});
       this.request_screen.find('.play-first').show();
       this.request_screen.find('.play-second').hide();
     }else{
+      console.log('вызов', player.attr('id'), {"game_event":"challenge","first":false});
+      this.send().message(player.attr('id'), {"game_event":"challenge","first":false});
       this.request_screen.find('.play-first').hide();
       this.request_screen.find('.play-second').show();
     }
 
     this.openScreen(this.request_screen);
-
-    window.setTimeout($.proxy(function(){this.playerDecline(player)},this),3500);
   };
 
   renjuController.prototype.renderUserList = function(players){
@@ -241,7 +381,12 @@
     playersWrapper.html('');
 
     while(count--){
-      playersWrapper.append(players[count].getHtml());
+      playersWrapper.append(this.player({
+            name: players[count].name,
+            x: players[count].avatar.x,
+            y: players[count].avatar.y,
+            id: players[count].id
+          }));
     }
     wrapper.css('background-image',"none");
     playersWrapper.find('.player').on('click',$.proxy(this.sendRequest,this));

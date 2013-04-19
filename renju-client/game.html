@@ -9,6 +9,7 @@
   <script src="http://renju.in:1337/socket.io/socket.io.js"></script>
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery-ui.min.js"></script>
+  <script src="js/underscore-min.js"></script>
   <script src="js/PxLoader.js"></script>
   <script src="js/PxLoaderImage.js"></script>
   <script src="js/handlebars.js"></script>
@@ -22,18 +23,9 @@
   <div class="wrapper">
     <div class="inner-wrapper">
       <div class="placeholder">
-        <div class="player">
-          <div class="details">
-            <p class="avatar" data-avatar-x="23" data-avatar-y="115" style="background-position: -23px -115px"></p>
-            <p class="name">Муфаса</p>
-          </div>
-          <nav>
-            <a href="#pass" class="pass">Пас</a>
-            <a href="#remove" class="remove">Я не я!</a>
-          </nav>
-        </div>
       </div>
-      <div class="word">предлагает вам сыграть</div>
+      <div class="word first">предлагает вам сыграть и хочет ходить первым</div>
+      <div class="word second">предлагает вам сыграть и хочет ходить вторым</div>
       <nav>
         <a href="#accept" class="accept">Ну давай!</a>
         <a href="#decline" class="decline">Да ну нафиг…</a>
@@ -84,11 +76,22 @@
 <div class="request-screen screen">
   <div class="wrapper">
     <div class="inner-wrapper">
+
       <div class="placeholder-1"></div>
       <div class="word">вызывает на поединок</div>
       <div class="placeholder-2"></div>
-      <div class="play-first word">и будет ходить первой.</div>
-      <div class="play-second word">и будет ходить второй.</div>
+      <br>
+
+        <div class="play-first word">
+          <div class="word">Первый ход за</div>
+          <div class="placeholder-1"></div>
+        </div>
+
+        <div class="play-second word">
+          <div class="word">Первый ход за</div>
+          <div class="placeholder-2"></div>
+        </div>
+
       <div class="turn">Тот кто ходит первым что бы победить должен построить в ряд ровно 5 церквей, ни больше, ни меньше, а тот, кто ходит вторым сможет победить построив в ряд любое количество борделей большее 4.</div>
     </div>
   </div>

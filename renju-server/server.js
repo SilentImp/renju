@@ -30,22 +30,23 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function(){
-    if(!socket[userId]) return;
     users[userId].sock = undefined;
     users[userId].status = 'dead';
     socket.broadcast.emit('broadcast', users[userId]);
     delete users[userId];
-  })
+  });
+
   socket.on('message', function(data){
     if(!users[data.to]) return;
     users[data.to].sock.emit('message', data);
-  })
+  });
+
   socket.on('broadcast', function(data){
     if(data.status && data.origin && data.origin.id){
       users[data.origin.id].sock = undefined;
       users[data.origin.id].status = data.status;
     }
     socket.broadcast.emit('broadcast', data);
-  })
+  });
 
 });

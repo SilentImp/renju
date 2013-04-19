@@ -61,6 +61,9 @@ function message(msgObj){
 
 function broadcast(){
   return {
+    quit: function(){
+      socket.emit('disconnect', message({'status':'available', 'userid': user.id}));
+    },
     available: function(){
       socket.emit('broadcast', message({'status':'available', 'userid': user.id}));
     },
