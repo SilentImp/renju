@@ -27,6 +27,7 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('broadcast', usr);
   });
   socket.on('disconnect', function(){
+    if(!socket[userId]) return;
     socket[userId].sock = undefined;
     socket[userId].status = 'dead';
     socket.broadcast.emit('broadcast', socket[userId]);
