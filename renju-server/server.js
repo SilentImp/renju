@@ -28,10 +28,10 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('disconnect', function(){
     if(!socket[userId]) return;
-    socket[userId].sock = undefined;
-    socket[userId].status = 'dead';
-    socket.broadcast.emit('broadcast', socket[userId]);
-    delete socket[userId];
+    users[userId].sock = undefined;
+    users[userId].status = 'dead';
+    socket.broadcast.emit('broadcast', users[userId]);
+    delete users[userId];
   })
   socket.on('message', function(data){
     if(!users[data.to]) return;
