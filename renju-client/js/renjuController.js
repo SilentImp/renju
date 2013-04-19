@@ -199,49 +199,20 @@
   };
 
   renjuController.prototype.getUsersList = function(users){
-    console.log(users);
+    this.renderUserList(users);
     this.users_def.resolve();
   };
 
   renjuController.prototype.sendUserData = function(user_id){
     this.online_user.id = user_id;
-    console.log(this.online_user);
     this.socket.emit('user',this.online_user);
     this.user_id_def.resolve();
   };
 
   // Выбираем противника
   renjuController.prototype.selectPartner = function(data){
-
-    p1 = $('.create-online-user-screen .online-player');
-
-    this.online_player = new Player;
-    this.online_player.name = p1.find('.name').text();
-    this.online_player.first = true;
-    this.online_player.avatar.x = p1.find('.avatar').attr('data-avatar-x');
-    this.online_player.avatar.y = p1.find('.avatar').attr('data-avatar-y');
-
-    this.user_list_screen.find('.players').html();
-
     this.openScreen(this.user_list_screen);
-
-    //TODO getUserList
-    var players = [],
-        foo_count = Math.ceil(Math.random()*100),
-        names = ['Муфаса', 'Джеймс', 'Му', 'Пу', 'Фумбаса', 'Зуррйир', 'Тутуола', 'Одафин', 'Танука', 'Мексиканец', 'Жабоглот', 'Муга', 'Муса', 'Амос', 'Аратара', 'Джанго', 'Намиби', 'Чучéлло', 'Бонга-Бонга', 'Ян', 'Флукс', 'Монтгомери'],
-        names_count = names.length;
-
-    while(foo_count--){
-      player = new Player;
-      player.name = names[Math.floor(Math.random()*names_count)];
-      player.avatar.x = Math.floor(Math.random()*9)*23;
-      player.avatar.y = Math.floor(Math.random()*7)*23;
-      player.id =
-      players.push(player);
-    }
-
-    this.renderUserList(players);
-    };
+  };
 
   renjuController.prototype.sendRequest = function(event){
     var player = $(event.currentTarget);
@@ -267,19 +238,12 @@
         wrapper = this.user_list_screen.find('.wrapper'),
         playersWrapper = wrapper.find('.players');
 
+    playersWrapper.html('');
+
     while(count--){
       playersWrapper.append(players[count].getHtml());
     }
     wrapper.css('background-image',"none");
-
-    var p1 = this.create_online_user_screen.find('.player');
-    this.player1 = new Player;
-    this.player1.name = p1.find('.name').text();
-    this.player1.first = true;
-    this.player1.avatar.x = p1.find('.avatar').attr('data-avatar-x');
-    this.player1.avatar.y = p1.find('.avatar').attr('data-avatar-y');
-
-    this.user_list_screen.find('.player-holder').html(this.player1.getHtml());
     playersWrapper.find('.player').on('click',$.proxy(this.sendRequest,this));
   };
 
@@ -757,6 +721,7 @@
         this.online_user.name = name;
         this.online_user.avatar.x = x;
         this.online_user.avatar.y = y;
+        this.user_list_screen.find('.player-holder').html(this.online_user.getHtml());
         this.create_online_user_screen.find('.confirm').show();
       }
     };
