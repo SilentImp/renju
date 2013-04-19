@@ -1,6 +1,19 @@
 (function(global){
 
   // Пользователь
+  function OnLineUser(){
+    return {
+      avatar: {
+        x:0,
+        y:0
+        },
+      name: '',
+      id: null
+    }
+  }
+
+
+  // Пользователь
   function Player(){
     this.player = Handlebars.compile($("#player").html());
     this.avatar = {
@@ -34,7 +47,7 @@
     this.server = 'http://178.79.181.157:1337/';
     this.socket = null;
     this.onLineUserList = [];
-    this.onLineUser = new Player;
+    this.online_user = new OnLineUser;
 
     //Всякое
     this.turn = 0;
@@ -182,8 +195,30 @@
 
     this.openScreen(this.connecting_screen);
     this.socket = io.connect(this.server);
-    this.socket.on('connect',$.proxy(this.selectPartner,this));
 
+    this.user_id_def = jQuery.Deferred().progress();
+    this.users_def   = jQuery.Deferred().progress();
+
+    this.socket.on('userId',$.proxy(this.sendUserData,this));
+    this.socket.on('users',$.proxy(this.getUsersList,this));
+
+    $.when(
+        this.user_id_def,
+        this.users_def
+      ).then(
+        $.proxy(this.selectPartner,this)
+      );
+  };
+
+  renjuController.prototype.getUsersList = function(users){
+    console.log(users);
+    this.users_def.resolve();
+  };
+
+  renjuController.prototype.sendUserData = function(user_id){
+    this.online_user.id = user_id;
+    this.socket.emit('user',this.online_user);
+    this.user_id_def.resolve();
   };
 
   // Выбираем противника

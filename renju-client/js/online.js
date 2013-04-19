@@ -143,6 +143,7 @@ send().message(user.id, my_message);
 
 //Получение сообщения пользователем
 socket.on('message', readMessage);
+
 function readMessage(msgObj){
   switch(msgObj.game_event){
     case 'challenge':
@@ -172,8 +173,6 @@ function readMessage(msgObj){
       break;
   }
 }
-
-
 
 function send(){
   return {
