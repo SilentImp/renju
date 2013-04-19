@@ -17,7 +17,7 @@ io.sockets.on('connection', function (socket) {
   var userId = users.length;
   users[userId] = {sock:socket};
   socket.emit('userId', userId);
-  socket.emit('users', _(users).filter(function(obj){ return obj.status == 'available';}));
+  socket.emit('users', _.chain(users).filter(function(obj){ return obj.status == 'available';}).omit('sock'));
 
   socket.on('user', function(data){
     users[userId] = _(users[userId]).extend(data);
