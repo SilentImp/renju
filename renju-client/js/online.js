@@ -112,35 +112,34 @@ socket.on('broadcast', function(msgObj){
 });
 
 //Отправка сообщений конкретному пользователю
-var message = {},
+var my_message = {},
     reply = {};
 
 //Бросаю тебе вызов
-message = {
+my_message = {
   "game_event":"challenge"
-  "user":user
 }
-send().message(user.id,message);
+send().message(user.id, my_message);
 
 //Пасс
-message = {
+my_message = {
   "game_event":"pass"
 }
-send().message(user.id,message);
+send().message(user.id, my_message);
 
 //Ход
-message = {
+my_message = {
   "game_event":"move",
   "x":0,
   "y":1
 }
-send().message(user.id,message);
+send().message(user.id, my_message);
 
 //Противник вышел из игры
-message = {
+my_message = {
   "game_event":"quit"
 }
-send().message(user.id,message);
+send().message(user.id, my_message);
 
 //Получение сообщения пользователем
 socket.on('message', readMessage);
