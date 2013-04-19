@@ -14,7 +14,8 @@
     "game"
   ],
   "dependencies":{
-    "socket.io":"latest"
+    "socket.io":"latest",
+    "underscore":"latest"
   },
   "author": "",
   "license": "MIT"
