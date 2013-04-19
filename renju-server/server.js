@@ -30,6 +30,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function(){
+    console.log('disconnect',users);
     users[userId].sock = undefined;
     users[userId].status = 'dead';
     socket.broadcast.emit('broadcast', users[userId]);

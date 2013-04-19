@@ -204,18 +204,22 @@
   //Создаем пользователя для онлайн игры
   renjuController.prototype.backToOnLineUser = function(event){
     event.preventDefault();
+    if(this.socket !== null){
+      this.socket.disconnect();
+      $(window).off('beforeunload',$.proxy(this.pageClosed,this));
+    }
     this.openScreen(this.create_online_user_screen);
   };
 
   renjuController.prototype.connectToServer = function(event){
 
     if(this.socket !== null){
-      this.selectPartner();
-      return;
+      this.socket.socket.reconnect();
+    }else{
+      this.socket = io.connect(this.server);
     }
 
     this.openScreen(this.connecting_screen);
-    this.socket = io.connect(this.server);
 
     this.user_id_def = jQuery.Deferred().progress();
     this.users_def   = jQuery.Deferred().progress();
@@ -224,8 +228,7 @@
     this.socket.on('users',$.proxy(this.getUsersList,this));
     this.socket.on('broadcast',$.proxy(this.broadcasted,this));
     this.socket.on('message',$.proxy(this.readMessage,this));
-    $(window).on('close',$.proxy(this.pageClosed,this));
-
+    $(window).on('beforeunload',$.proxy(this.pageClosed,this));
     $.when(
         this.user_id_def,
         this.users_def
@@ -235,8 +238,7 @@
   };
 
   renjuController.prototype.pageClosed = function(event){
-    console.log('cообщаем что закрываем сообщение');
-    alert('Сбегун!');
+    this.socket.disconnect();
   };
 
   renjuController.prototype.readMessage = function(msgObj){
