@@ -37,11 +37,6 @@ socket.on('connect', function(){
   },1000);
 });
 
-socket.on('userId', function(userId){
-  user.id = userId;
-  saveDetails(user);
-});
-
 
 socket.on('message', function(data){
   if(data.type == 'transaction' && data.origin.id == user.id){
@@ -75,59 +70,111 @@ function broadcast(){
   }
 }
 
+
+//Cообщения серверу ???????
+
+// Когда мы получили ID — передаем серверу свои данные, после чего он объявляет
+// нас доступными для игры
+socket.on('userId', function(userId){
+  user.id = userId;
+  saveDetails(user);
+});
+
+// Заправшиваем список пользователей
 function getUserList(){
   socket.emit('requestList');
 }
 
+// Отправляем серверу данные о себе
 function saveDetails(player){
   socket.emit('saveDetails', JSON.stringify(player));
 }
 
 
-//Сохранили пользователя
-socket.on('userSaved', function(data){
-  broadcast().available();
-  //Сохранили на сервере данные о пользователе, говорим что с ним можно играть
+//Сообщения всем
+
+//С мной можно поиграть
+broadcast().available();
+
+//С мной нельзя поиграть
+broadcast().busy();
+
+
+socket.on('broadcast', function(msgObj){
+  switch(msgObj.status){
+    case 'available':
+      //Добавляем пользователя в список доступных онлайн пользователей
+      break;
+    case 'busy':
+      //Удаляем пользователя из списка доступных онлайн пользователей
+      break;
+  }
 });
 
-//Получили список пользователей
-socket.on('userList', function(data){
-  //Формируем список пользователей
-  // data - строка JSON с массивом пользователей в формате указаном в документе
-});
+//Отправка сообщений конкретному пользователю
+var message = {},
+    reply = {};
 
-// Броадкаст
+//Бросаю тебе вызов
+message = {
+  "game_event":"challenge"
+  "user":user
+}
+send().message(user.id,message);
 
-socket.on('removeUser', function(data){
-  // Удаляем из списка доступных для приглашения пользователей
-  // data — id cокета
-});
+//Пасс
+message = {
+  "game_event":"pass"
+}
+send().message(user.id,message);
 
-socket.on('addUser', function(data){
-  // Добавляем в список доступных для игры
-  // data — строка JSON с объектом пользователя в формате указаном в документе
-});
+//Ход
+message = {
+  "game_event":"move",
+  "x":0,
+  "y":1
+}
+send().message(user.id,message);
 
-//Полученные транзакции
+//Противник вышел из игры
+message = {
+  "game_event":"quit"
+}
+send().message(user.id,message);
 
-socket.on('onChallenge', function(data){
-  // Вывожу предложение поиграть
-  // data — строка JSON с объектом пользователя в формате указаном в документе +
-  // он хочет быть первым или вторым например второй объект {"first":"[true|false]"}
-});
+//Получение сообщения пользователем
+socket.on('message', readMessage);
+function readMessage(msgObj){
+  switch(msgObj.game_event){
+    case 'challenge':
+      //Вам бросили вызов, вы можете принять или отказаться
+      reply = {
+        "game_event":"challenge accepted"
+      };
+      reply = {
+        "game_event":"challenge declined"
+      };
+      send().reply(msgObj,reply);
+      break;
+    case 'challenge accepted':
+      //С вами согласились играть
+      break;
+    case 'challenge declined':
+      //С вами отказались играть
+      break;
+    case 'pass':
+      //Пасс
+      break;
+    case 'move':
+      //Ход
+      break;
+    case 'quit':
+      //Противник вышел из игры
+      break;
+  }
+}
 
-socket.on('onMadeAMove', function(data){
-  // Добавляю здание
-  // data — {"x":"0","y":"0"}
-});
 
-socket.on('onPass', function(){
-  // Противник пасовал
-});
-
-socket.on('onOpponentQuit', function(){
-  // Противник вышел из игры
-});
 
 function send(){
   return {
