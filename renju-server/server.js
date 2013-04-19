@@ -22,7 +22,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('user', function(data){
     users[userId] = _(users[userId]).extend(data);
     users[userId].status = 'available';
-    socket.broadcast.emit('broadcast', users[userId]);
+    var usr = _.clone(users[userId]);
+    usr.sock = undefined;
+    socket.broadcast.emit('broadcast', usr);
   });
   socket.on('disconnect', function(){
     socket[userId].sock = undefined;
