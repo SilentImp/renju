@@ -62,10 +62,10 @@ function message(msgObj){
 function broadcast(){
   return {
     available: function(){
-      socket.emit('broadcast', message({'status':'available'}));
+      socket.emit('broadcast', message({'status':'available', 'userid': user.id}));
     },
     busy: function(){
-      socket.emit('broadcast', message({'status':'busy'}))
+      socket.emit('broadcast', message({'status':'busy', 'userid': user.id}))
     }
   }
 }
@@ -103,10 +103,10 @@ broadcast().busy();
 socket.on('broadcast', function(msgObj){
   switch(msgObj.status){
     case 'available':
-      //Добавляем пользователя в список доступных онлайн пользователей
+      //Добавляем пользователя c msgObj.userid в список доступных онлайн пользователей
       break;
     case 'busy':
-      //Удаляем пользователя из списка доступных онлайн пользователей
+      //Удаляем пользователя c msgObj.userid из списка доступных онлайн пользователей
       break;
   }
 });
