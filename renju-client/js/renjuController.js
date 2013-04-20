@@ -38,7 +38,7 @@
     this.online_user = new Player;
     this.challengeObj = {};
 
-    //Всякое
+    this.busy = false;
     this.turn = 0;
     this.place_size = 50;
     this.field = $('.field');
@@ -122,14 +122,16 @@
 
   renjuController.prototype.declineChellange = function(event){
     event.preventDefault();
-    this.challenge_popup.stop().fadeOut();
+    this.challenge_popup.hide();
     this.send().reply(this.challengeObj,{"game_event":"challenge declined"});
   };
 
   renjuController.prototype.acceptChellange = function(event){
     event.preventDefault();
-    this.challenge_popup.stop().fadeOut();
+    this.challenge_popup.hide();
     this.send().reply(this.challengeObj,{"game_event":"challenge accepted"});
+    this.broadcast.busy();
+    this.busy = true;
 
     if(this.challengeObj.first==true){
       this.startOnlineGame(this.challengeObj.origin,this.online_user);
@@ -206,7 +208,7 @@
       first: player.first
     }));
 
-    this.game_status.stop().fadeIn();
+    this.game_status.show();
   };
 
   // Пользователь отказался с вами играть
@@ -266,7 +268,7 @@
         this.user_id_def,
         this.users_def
       ).then(
-        $.proxy(this.selectPartner,this)
+        $.proxy(this.backToOnlineUserList,this)
       );
   };
 
@@ -329,15 +331,9 @@
     this.game_screen.find('.information .player .pass').on('click',$.proxy(this.sendPass,this)).on('click',$.proxy(this.pass,this));
     this.game_screen.find('.quit').off('click').on('click',$.proxy(this.sendQuit,this)).on('click',$.proxy(this.backToOnlineUserList,this));
     this.standoff_screen.find('.ok').off('click').on('click',$.proxy(this.backToOnlineUserList,this));
-    this.standoff_screen.find('.replay').stop().fadeOut();
+    this.standoff_screen.find('.replay').hide();
     this.win_screen.find('.ok').off('click').on('click',$.proxy(this.backToOnlineUserList,this));
-    this.win_screen.find('.replay').stop().fadeOut();
-
-    if(this.boardTransform==null){
-      this.boardTransform = this.getTransform(this.field[0]);
-      this.currentRotate='';
-      this.currentScale='';
-    }
+    this.win_screen.find('.replay').hide();
 
     this.generateBoard();
     this.board_top.find('.place').on('click',$.proxy(this.sendMove,this));
@@ -347,6 +343,12 @@
 
     if(this.player2.id==this.online_user.id){
       this.showGameStatus(this.player2);
+    }
+
+    if(this.boardTransform==null){
+      this.boardTransform = this.getTransform(this.field[0]);
+      this.currentRotate='';
+      this.currentScale='';
     }
   };
 
@@ -378,6 +380,10 @@
 
   renjuController.prototype.backToOnlineUserList = function(event){
     event.preventDefault();
+    this.broadcast.available();
+    this.busy = false;
+    this.player1 = null;
+    this.player2 = null;
     this.selectPartner();
   };
 
@@ -464,13 +470,16 @@
     switch(msgObj.game_event){
         case 'challenge':
           //Вам бросили вызов, вы можете принять или отказаться
+          if(this.busy==true){
+            this.send().reply(msgObj,{"game_event":"challenge declined"});
+          }
           var foe = msgObj.origin;
           if(msgObj.first == true){
-            this.challenge_popup.find('.first').stop().fadeIn();
-            this.challenge_popup.find('.second').stop().fadeOut();
+            this.challenge_popup.find('.first').show();
+            this.challenge_popup.find('.second').hide();
           }else{
-            this.challenge_popup.find('.first').stop().fadeOut();
-            this.challenge_popup.find('.second').stop().fadeIn();
+            this.challenge_popup.find('.first').hide();
+            this.challenge_popup.find('.second').show();
           }
           this.challenge_popup.find('.placeholder').html(this.player({
             name: foe.name,
@@ -478,7 +487,7 @@
             x: foe.avatar.x,
             y: foe.avatar.y
           }));
-          this.challenge_popup.stop().fadeIn();
+          this.challenge_popup.show();
           this.challengeObj = msgObj;
           break;
         case 'challenge accepted':
@@ -502,13 +511,13 @@
           break;
         case 'pass':
           $('.information #'+this.online_user.id+' .pass').trigger('click');
-          this.game_status.stop().fadeOut();
+          this.game_status.hide();
           //Пасс
           break;
         case 'move':
           //Ход
           this.board_top.find('.place[data-x="'+msgObj.move.x+'"][data-y="'+msgObj.move.y+'"]').trigger('click');
-          this.game_status.stop().fadeOut();
+          this.game_status.hide();
           break;
         case 'quit':
           var foe = msgObj.origin;
@@ -538,6 +547,12 @@
         break;
       case 'dead':
         var foe = msgObj;
+        if(
+          typeof this.player1=='undefined'||
+          typeof this.player2=='undefined'
+          ){
+          break;
+        }
         if(
           (foe.id  ==  this.player1.id)||
           (foe.id  ==  this.player2.id)
@@ -621,13 +636,13 @@
     if(turn.hasClass('first_player')){
       this.challengeObj.first = false;
       this.send().message(player.attr('id'), {"game_event":"challenge","first":true});
-      this.request_screen.find('.play-first').stop().fadeIn();
-      this.request_screen.find('.play-second').stop().fadeOut();
+      this.request_screen.find('.play-first').show();
+      this.request_screen.find('.play-second').hide();
     }else{
       this.challengeObj.first = true;
       this.send().message(player.attr('id'), {"game_event":"challenge","first":false});
-      this.request_screen.find('.play-first').stop().fadeOut();
-      this.request_screen.find('.play-second').stop().fadeIn();
+      this.request_screen.find('.play-first').hide();
+      this.request_screen.find('.play-second').show();
     }
 
     this.openScreen(this.request_screen);
@@ -933,8 +948,8 @@
           player2: this.player2.name
         }));
       }
-      this.game_status.stop().fadeOut();
-      this.see_game_screen.stop().fadeIn();
+      this.game_status.hide();
+      this.see_game_screen.show();
     }
 
     if(loose){
@@ -951,8 +966,8 @@
         player2: this.player2.name
       }));
 
-      this.game_status.stop().fadeOut();
-      this.see_game_screen.stop().fadeIn();
+      this.game_status.hide();
+      this.see_game_screen.show();
     }
   };
 
@@ -1050,18 +1065,18 @@
     this.game_screen.find('.information .player .pass').on('click',$.proxy(this.pass,this));
     this.game_screen.find('.quit').off('click').on('click',$.proxy(this.startScreen,this));
     this.standoff_screen.find('.ok').off('click').on('click',$.proxy(this.startScreen,this));
-    this.standoff_screen.find('.replay').stop().fadeIn();
+    this.standoff_screen.find('.replay').show();
     this.win_screen.find('.ok').off('click').on('click',$.proxy(this.startScreen,this));
-    this.win_screen.find('.replay').stop().fadeIn();
+    this.win_screen.find('.replay').show();
+
+    this.generateBoard();
+    this.board_top.find('.place').on('click',$.proxy(this.createHouse,this));
 
     if(this.boardTransform==null){
       this.boardTransform = this.getTransform(this.field[0]);
       this.currentRotate='';
       this.currentScale='';
     }
-
-    this.generateBoard();
-    this.board_top.find('.place').on('click',$.proxy(this.createHouse,this));
   };
 
   //Проверяем подходит ли имя по формату в хотсит
@@ -1125,7 +1140,7 @@
       if(forms_count==2){
         // Хотсит
         if(this.create_two_users_screen.find('.player').length==2){
-          this.create_two_users_screen.find('.confirm').stop().fadeIn();
+          this.create_two_users_screen.find('.confirm').show();
         }
       }else{
         // OnLine
@@ -1133,7 +1148,7 @@
         this.online_user.avatar.x = x;
         this.online_user.avatar.y = y;
         this.user_list_screen.find('.player-holder').html(this.online_user.getHtml());
-        this.create_online_user_screen.find('.confirm').stop().fadeIn();
+        this.create_online_user_screen.find('.confirm').show();
       }
     };
 
@@ -1142,9 +1157,9 @@
     var link = $(event.currentTarget),
         player = link.closest('.player'),
         form = player.next();
-        player.parent().find('.confirm').stop().fadeOut();
+        player.parent().find('.confirm').hide();
         player.remove();
-        form.stop().fadeIn();
+        form.show();
   };
 
   renjuController.prototype.hotseat = function(event){
@@ -1175,7 +1190,7 @@
 
   renjuController.prototype.selectAvatar = function(event){
     event.preventDefault();
-    this.avatar_popup.stop().fadeIn();
+    this.avatar_popup.show();
     this.avatar_popup.player_avatar = $(event.currentTarget);
     };
 
@@ -1189,12 +1204,12 @@
       'background-position':'-'+x+'px -'+y+'px'
     }).attr('data-avatar-x',x).attr('data-avatar-y',y);
     this.avatar_popup.player_avatar = null;
-    this.avatar_popup.stop().fadeOut();
+    this.avatar_popup.hide();
     };
 
   renjuController.prototype.cancelAvatar = function(event){
     event.preventDefault();
-    this.avatar_popup.stop().fadeOut();
+    this.avatar_popup.hide();
     };
 
   renjuController.prototype.startScreen = function(event){
@@ -1204,6 +1219,7 @@
 
   renjuController.prototype.getTransform = function(element){
     var st = window.getComputedStyle(element, null);
+
     var transform = st.getPropertyValue("-webkit-transform") ||
                     st.getPropertyValue("-moz-transform") ||
                     st.getPropertyValue("-ms-transform") ||
@@ -1216,8 +1232,8 @@
   };
 
   renjuController.prototype.openScreen = function(game_screen){
-    $('.screen, .popup').stop().fadeOut();
-    game_screen.stop().fadeIn();
+    $('.screen, .popup').hide();
+    game_screen.show();
   };
 
   function onDomReady(){
