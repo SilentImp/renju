@@ -130,7 +130,7 @@
     event.preventDefault();
     this.challenge_popup.hide();
     this.send().reply(this.challengeObj,{"game_event":"challenge accepted"});
-    this.broadcast.busy();
+    this.broadcast().busy();
     this.busy = true;
 
     if(this.challengeObj.first==true){
@@ -151,12 +151,12 @@
 
   renjuController.prototype.broadcast = function(){
     return {
-      available: function(){
+      available: $.proxy(function(){
         this.socket.emit('broadcast', this.set_message({'status':'available', 'userid': this.online_user.id}));
-      },
-      busy: function(){
+      },this),
+      busy: $.proxy(function(){
         this.socket.emit('broadcast', this.set_message({'status':'busy', 'userid': this.online_user.id}))
-      }
+      },this)
     }
   };
 
@@ -341,8 +341,18 @@
 
     this.openScreen(this.game_screen);
 
-    if(this.player2.id==this.online_user.id){
+    if(
+      (this.player2.id==this.online_user.id)
+      (this.player2.first==false)
+      ){
       this.showGameStatus(this.player2);
+    }
+
+    if(
+      (this.player1.id==this.online_user.id)
+      (this.player1.first==false)
+      ){
+      this.showGameStatus(this.player1);
     }
 
     if(this.boardTransform==null){
@@ -379,8 +389,10 @@
   };
 
   renjuController.prototype.backToOnlineUserList = function(event){
-    event.preventDefault();
-    this.broadcast.available();
+    if(typeof event !== 'undefined'){
+      event.preventDefault();
+    }
+    this.broadcast().available();
     this.busy = false;
     this.player1 = null;
     this.player2 = null;
@@ -536,17 +548,31 @@
   renjuController.prototype.broadcasted = function(msgObj){
     switch(msgObj.status){
       case 'available':
-        this.onLineUserList.push(msgObj);
+        var usr = msgObj;
+        if(typeof usr.origin !== 'undefined'){
+          usr = usr.origin;
+        }
+        if(findUserById(usr.id)!==null){
+          break;
+        }
+        this.onLineUserList.push(usr);
         this.user_list_screen.find('.players').prepend(this.player({
-          name: msgObj.name,
-          x: msgObj.avatar.x,
-          y: msgObj.avatar.y,
-          id: msgObj.id
+          name: usr.name,
+          x: usr.avatar.x,
+          y: usr.avatar.y,
+          id: usr.id
         }));
-        this.user_list_screen.find('.players #'+msgObj.id).on('click',$.proxy(this.sendRequest,this));
+        this.user_list_screen.find('.players #'+usr.id).on('click',$.proxy(this.sendRequest,this));
+
         break;
       case 'dead':
         var foe = msgObj;
+        if(typeof foe.origin !== 'undefined'){
+          foe = foe.origin;
+        }
+        if(findUserById(foe.id)==null){
+          break;
+        }
         if(
           typeof this.player1=='undefined'||
           typeof this.player2=='undefined'
@@ -575,7 +601,13 @@
         }
         break;
       case 'busy':
-        var foe = msgObj.origin;
+        var foe = msgObj;
+        if(typeof foe.origin !== 'undefined'){
+          foe = foe.origin;
+        }
+        if(findUserById(foe.id)==null){
+          break;
+        }
         this.user_list_screen.find('.players #'+msgObj.id).remove();
         var index = this.onLineUserList.length;
         while(index--){
