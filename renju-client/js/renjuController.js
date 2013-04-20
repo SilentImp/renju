@@ -124,20 +124,25 @@
     event.preventDefault();
     this.challenge_popup.hide();
     this.send().reply(this.challengeObj,{"game_event":"challenge declined"});
+
+    this.challengeObj = {};
+    this.busy = false;
   };
 
   renjuController.prototype.acceptChellange = function(event){
     event.preventDefault();
     this.challenge_popup.hide();
     this.send().reply(this.challengeObj,{"game_event":"challenge accepted"});
-    this.broadcast().busy();
-    this.busy = true;
 
     if(this.challengeObj.first==true){
       this.startOnlineGame(this.challengeObj.origin,this.online_user);
     }else{
       this.startOnlineGame(this.online_user,this.challengeObj.origin);
     }
+
+    this.challengeObj = {};
+    // this.broadcast().busy();
+    this.busy = true;
   };
 
   renjuController.prototype.onLinePass = function(event){
@@ -152,10 +157,10 @@
   renjuController.prototype.broadcast = function(){
     return {
       available: $.proxy(function(){
-        this.socket.emit('broadcast', this.set_message({'status':'available', 'userid': this.online_user.id}));
+        this.socket.emit('broadcast', this.set_message({'status':'available', origin: this.online_user, 'userid': this.online_user.id}));
       },this),
       busy: $.proxy(function(){
-        this.socket.emit('broadcast', this.set_message({'status':'busy', 'userid': this.online_user.id}))
+        this.socket.emit('broadcast', this.set_message({'status':'busy', origin: this.online_user, 'userid': this.online_user.id}))
       },this)
     }
   };
@@ -341,18 +346,19 @@
 
     this.openScreen(this.game_screen);
 
+
     if(
-      (this.player2.id==this.online_user.id)
-      (this.player2.first==false)
+      (this.player2.id==this.online_user.id)&&
+      (this.player2.first == false)
       ){
-      this.showGameStatus(this.player2);
+      this.showGameStatus(this.player1);
     }
 
     if(
-      (this.player1.id==this.online_user.id)
+      (this.player1.id==this.online_user.id)&&
       (this.player1.first==false)
       ){
-      this.showGameStatus(this.player1);
+      this.showGameStatus(this.player2);
     }
 
     if(this.boardTransform==null){
@@ -392,7 +398,7 @@
     if(typeof event !== 'undefined'){
       event.preventDefault();
     }
-    this.broadcast().available();
+    // this.broadcast().available();
     this.busy = false;
     this.player1 = null;
     this.player2 = null;
@@ -482,6 +488,7 @@
     switch(msgObj.game_event){
         case 'challenge':
           //Вам бросили вызов, вы можете принять или отказаться
+          this.challengeObj = msgObj;
           if(this.busy==true){
             this.send().reply(msgObj,{"game_event":"challenge declined"});
           }
@@ -500,7 +507,7 @@
             y: foe.avatar.y
           }));
           this.challenge_popup.show();
-          this.challengeObj = msgObj;
+
           break;
         case 'challenge accepted':
           //С вами согласились играть
@@ -552,7 +559,7 @@
         if(typeof usr.origin !== 'undefined'){
           usr = usr.origin;
         }
-        if(findUserById(usr.id)!==null){
+        if(this.findUserById(usr.id)!==null){
           break;
         }
         this.onLineUserList.push(usr);
@@ -570,7 +577,7 @@
         if(typeof foe.origin !== 'undefined'){
           foe = foe.origin;
         }
-        if(findUserById(foe.id)==null){
+        if(this.findUserById(foe.id)==null){
           break;
         }
         if(
@@ -605,7 +612,7 @@
         if(typeof foe.origin !== 'undefined'){
           foe = foe.origin;
         }
-        if(findUserById(foe.id)==null){
+        if(this.findUserById(foe.id)==null){
           break;
         }
         this.user_list_screen.find('.players #'+msgObj.id).remove();
