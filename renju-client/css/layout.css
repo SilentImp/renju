@@ -28,3 +28,13 @@ a{
   outline:none;
   text-decoration: none;
   }
+
+html.no-preserve-3d{
+  -webkit-transform-style: flat;
+  -moz-transform-style: flat;
+  transform-style: flat;
+
+  -webkit-perspective: none;
+  -moz-perspective: none;
+  perspective: none;
+  }

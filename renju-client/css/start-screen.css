@@ -49,6 +49,27 @@
     -ms-animation: logo 1s ease-in-out 0s infinite;
     animation: logo 1s ease-in-out 0s infinite;
     }
+
+  [lang='en-UK'] .start-screen a.hotseat u{
+    font-size: 23px;
+    }
+
+  .start-screen a.lang:after{
+    display: none;
+    }
+  .start-screen a.lang{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: auto;
+    padding: 0 10px;
+    width: auto;
+    text-indent: 0;
+    font: 12px/24px sans-serif;
+    z-index: 1000;
+    background-color: rgba(0,154,172,.85);
+    }
+
   .start-screen a.online{
     left: 50%;
     top: 50%;

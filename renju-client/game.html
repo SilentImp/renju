@@ -6,7 +6,7 @@
   <title>Renju</title>
   <link rel="stylesheet" href="css/common.css">
   <script src="js/modernizr.js"></script>
-  <script src="http://renju.in:1337/socket.io/socket.io.js"></script>
+
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery-ui.min.js"></script>
   <script src="js/underscore-min.js"></script>
@@ -203,6 +203,7 @@
 
 <div class="start-screen screen">
   <h2>Renju</h2>
+  <a href="/game_en.html" class="lang">English</a>
   <nav>
     <a href="#online" class="online">
       <b>
@@ -231,6 +232,8 @@
 <div class="see-game-screen screen"></div>
 
 <div id="templates">
+  <div id="name-required">Ты не представился. Это меня обижает.</div>
+  <div id="name-too-short">На нашей планете имена коротки, хотя и не слишком и состоят только из букв. Смирись.</div>
   <div id="loose_message">
     Все хорошо в меру. Если вы строите слишком много церквей, то хорошеньких
     мальчиков на всех уже не хватает. И вина. И пожертвований. {{player1}}
@@ -277,8 +280,8 @@
       <div class="wall-front"></div>
       <div class="wall-left"></div>
       <div class="wall-right"></div>
+      <div class="wall-back"></div>
       <div class="wall-roof"></div>
-      <div class="wall-floor"></div>
     </div>
   </div>
   <div id="church">
@@ -290,9 +293,15 @@
       <div class="wall-5"></div>
       <div class="wall-6"></div>
       <div class="wall-roof"></div>
-      <div class="wall-floor"></div>
+      <div class="crown-1"></div>
+      <div class="crown-2"></div>
+      <div class="crown-3"></div>
+      <div class="crown-4"></div>
+      <div class="crown-5"></div>
+      <div class="crown-6"></div>
     </div>
   </div>
 </div>
+<script src="js/checkPerspective.js"></script>
 </body>
 </html>

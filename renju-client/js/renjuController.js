@@ -198,10 +198,17 @@
     var helper = obj.helper,
         field = helper.parent(),
         x = Math.max(Math.min(event.clientX - field.offset().left, 100),0),
-        scale = 0.5+ x/100;
+        scale = 0.25+ x/100;
 
-    this.currentScale = ' scaleX('+scale+')'+' scaleY('+scale+')'+' scaleZ('+scale+')';
-    this.field[0].style[Modernizr.prefixed('transform')] = this.boardTransform + this.currentRotate + this.currentScale;
+    if(!$('html').hasClass('csstransforms')){
+      this.field[0].style.zoom = scale;
+    }else if(!$('html').hasClass('csstransforms3d')){
+      this.currentScale = ' scaleX('+scale+')'+' scaleY('+scale+')';
+      this.field[0].style[Modernizr.prefixed('transform')] = this.boardTransform + this.currentScale;
+    }else{
+      this.currentScale = ' scaleX('+scale+')'+' scaleY('+scale+')'+' scaleZ('+scale+')';
+      this.field[0].style[Modernizr.prefixed('transform')] = this.boardTransform + this.currentRotate + this.currentScale;
+    }
   };
 
   renjuController.prototype.showGameStatus = function(player){
@@ -580,12 +587,14 @@
         if(this.findUserById(foe.id)==null){
           break;
         }
+
         if(
           typeof this.player1=='undefined'||
           typeof this.player2=='undefined'
           ){
           break;
         }
+
         if(
           (foe.id  ==  this.player1.id)||
           (foe.id  ==  this.player2.id)
@@ -967,6 +976,11 @@
       loose = true;
     }
 
+    index = place_list.length;
+    while(index--){
+      place_list[index].building.addClass('level-'+Math.min(count,4));
+    }
+
     if(win){
       index = place_list.length;
       while(index--){
@@ -1126,11 +1140,11 @@
         name = start_name.replace(/[^a-zA-Zа-яА-Я]/g,"").trim();
     input.val(name);
     if(start_name.length==0){
-      input[0].setCustomValidity("Ты не представился. Это меня обижает.");
+      input[0].setCustomValidity(document.getElementById('name-required').innerHTML);
       return;
       }
     if(name==''||name.length<2||name.length>20){
-      input[0].setCustomValidity("На нашей планете имена коротки, хотя и не слишком и состоят только из букв. Смирись.");
+      input[0].setCustomValidity(document.getElementById('name-too-short').innerHTML);
       return;
     }
     input[0].setCustomValidity("");
@@ -1157,11 +1171,11 @@
         });
 
       if(start_name.length==0){
-        input[0].setCustomValidity("Ты не представился. Это меня обижает.");
+        input[0].setCustomValidity(document.getElementById('name-required').innerHTML);
         return;
         }
       if(name==''||name.length<2||name.length>20){
-        input[0].setCustomValidity("На нашей планете имена коротки, хотя и не слишком и состоят только из букв. Смирись.");
+        input[0].setCustomValidity(document.getElementById('name-too-short').innerHTML);
         return;
       }
 

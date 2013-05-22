@@ -4,6 +4,15 @@
   left: 0;
   right: 0;
   }
+  html.no-preserve-3d .information .rotation{
+    display: none;
+    }
+  html.no-preserve-3d .information .zoom{
+    top: 84px;
+    }
+    html.no-preserve-3d .information .handle{
+      left: 35px;
+      }
   .information .zoom{
 
     position: fixed;

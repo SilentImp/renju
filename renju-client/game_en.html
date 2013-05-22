@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en-UK">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Renju</title>
+  <link rel="stylesheet" href="css/common.css">
+  <script src="js/modernizr.js"></script>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-ui.min.js"></script>
+  <script src="js/underscore-min.js"></script>
+  <script src="js/PxLoader.js"></script>
+  <script src="js/PxLoaderImage.js"></script>
+  <script src="js/handlebars.js"></script>
+  <script src="js/preloading.js"></script>
+
+  <script src="js/renjuController.js"></script>
+</head>
+<body>
+
+<div class="challenge popup">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder">
+      </div>
+      <div class="word first">offers to play and wants to go first</div>
+      <div class="word second">offers to play and wants to go second</div>
+      <nav>
+        <a href="#accept" class="accept">Yes!</a>
+        <a href="#decline" class="decline">Go to hell, asshole!</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="game-status popup">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">lost in thought</div>
+    </div>
+  </div>
+</div>
+
+<div class="lost-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">has gone by the wind. Sometimes it's happens..</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="quit-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">run away from you. You are so scary…</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="decline-screen status-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      <div class="placeholder"></div>
+      <div class="word">don't like you. You are so nasty.</div>
+      <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+    </div>
+  </div>
+</div>
+
+<div class="request-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+
+      <div class="placeholder-1"></div>
+      <div class="word">challenge </div>
+      <div class="placeholder-2"></div>
+      <br>
+      <div class="word">
+        <div class="word">First move belongs to </div>
+        <div class="placeholder-1 play-first"></div>
+        <div class="placeholder-2 play-second"></div>
+      </div>
+      <div class="turn">Anyone who goes first that would have to build a win in a row exactly 5 churches, no more, no less, and he who walks the second building to be able to win a number of brothels any number greater than 4.</div>
+    </div>
+  </div>
+</div>
+
+<div class="connecting-screen screen">
+  <div class="wrapper">
+    <div class="inner-wrapper">
+      Connecting
+    </div>
+  </div>
+</div>
+
+<div class="user-list-screen screen">
+  <div class="wrapper">
+    <nav class="common-navigation">
+      <a href="#cancel" class="cancel">I changed my mind! Run away!</a>
+    </nav>
+    <header>
+      <b class="word">I</b>
+      <div class="player-holder"></div>
+      <b class="word">always</b>
+      <a href="#" class="first_player turn selected">strike first</a>
+      <a href="#" class="second_player turn">defend myself</a>
+      <b class="word">and challenge:</b>
+    </header>
+    <div class="players">
+    </div>
+  </div>
+</div>
+
+<div class="create-online-user-screen user-creation-screen screen">
+  <div class="wrapper">
+    <nav>
+      <a href="#cancel" class="cancel">I changed my mind! Run away!</a>
+      <a href="#confirm" class="confirm">Go ahead!</a>
+    </nav>
+    <form action="/create_user/" method="post" class="online-player">
+      <fieldset>
+        <a href="#" tabindex="0" class="avatar"></a>
+        <label for="player-1-name">I am</label>
+        <input autocomplete="off" tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Mufasa" value="">
+        <button tabindex="2" type="submit">I have told!</button>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<div class="loading-screen screen">
+  <h1>Loading</h1>
+  <div class="progress"><div id="loaded"></div></div>
+</div>
+
+<div class="game-screen screen">
+  <div class="information">
+    <a href="#quit" class="quit">Run away!</a>
+    <div class="rotation">
+      <div class="handle icon-move"></div>
+    </div>
+    <div class="zoom">
+      <div class="handle icon-zoom-in"></div>
+    </div>
+  </div>
+  <div class="field">
+    <div class="board">
+      <div class="board-top"></div>
+      <div class="board-front"></div>
+      <div class="board-left"></div>
+      <div class="board-right"></div>
+    </div>
+  </div>
+</div>
+
+<div class="win-screen screen">
+  <div class="message"></div>
+  <nav>
+    <a href="#replay" class="replay">Let's do it again!</a>
+    <a href="#ok" class="ok">| (• ◡•)|╯╰(❍ᴥ❍ʋ)</a>
+  </nav>
+</div>
+
+<div class="two-user-screen user-creation-screen screen">
+  <div class="wrapper">
+    <nav>
+      <a href="#cancel" class="cancel">I changed my mind! Run away!</a>
+      <a href="#confirm" class="confirm">Go ahead!</a>
+    </nav>
+    <form action="/create_user/" method="post" class="first-user">
+      <fieldset>
+        <a tabindex="0" href="#" class="avatar"></a>
+        <label for="player-1-name">I'm </label>
+        <input autocomplete="off" tabindex="1" required="required" type="text" class="player-name" id="player-1-name" placeholder="Mufasa" value="">
+        <button tabindex="2" type="submit">I have told!</button>
+      </fieldset>
+      <p class="about">
+        I go first, but I can only win if you build five temples in a row.
+        No more, no less.
+      </p>
+    </form>
+    <form action="/create_user/" method="post" class="second-user">
+      <fieldset>
+        <a tabindex="3" href="#" class="avatar"></a>
+        <label for="player-2-name">I'm</label>
+        <input autocomplete="off" tabindex="4" required="required" type="text" class="player-name" id="player-2-name" placeholder="Django" value="">
+        <button  tabindex="5" type="submit">I have told!</button>
+      </fieldset>
+      <p class="about">
+        I go to the second, but I can build as many brothels in a row as I want to.
+      </p>
+    </form>
+  </div>
+</div>
+
+<div class="avatars-popup popup"><div class="icons"></div></div>
+
+<div class="start-screen screen">
+  <h2>Renju</h2>
+  <a href="/" class="lang">Русский</a>
+  <nav>
+    <a href="#online" class="online">
+      <b><i>
+        Online
+      </i></b>
+    </a>
+    <a href="hotseat" class="hotseat">
+      <b><u>
+        Hotseat
+      </u></b>
+    </a>
+  </nav>
+</div>
+
+<div class="standoff screen">
+  <p class="message"></p>
+  <nav>
+    <a href="#replay" class="replay">Let's do it again!</a>
+    <a href="#ok" class="ok">ʕ •ᴥ•ʔ</a>
+  </nav>
+</div>
+
+<div class="see-game-screen screen"></div>
+
+<div id="templates">
+  <div id="name-required">Name required</div>
+  <div id="name-too-short">Name restricted to 20 symbols.</div>
+  <div id="loose_message">
+    Everything is good in moderation. If you build too many churches, the pretty
+    boys at all is not enough. And the wine. And donations. {{player1}}
+    lynched by his wards. With the iron maiden, metal bottle brush
+    and very shocked donkey suffering from diarrhea.
+  </div>
+  <div id="church_message">
+    {{player1}} set up very clever trap to the {{player2}}. He knew that
+    {{player2}} like it hot and so threw in the main square
+    a huge fire with witches. {{player2}} just walked by, sat down in a fire
+    and burned. Poor thing. {{player1}} made ​​from his skull excellent, handpainted
+    flowered cup.
+  </div>
+  <div id="house_message">
+    {{player2}} convinced everyone nuns go to brothels and with homeric laught
+    ran off into the sunset. {{player1}} burst of anger.
+  </div>
+  <div id="standoff_message">
+    {{player1}} made ​​peace with {{player2}} And they lived happily ever after,
+    about three and a half weeks until the {{player1}} killed
+    {{player2}} with poisonous dagger in his sleep and was not on the ridiculous accident
+    trampled by the pack of wild sire-bears, about a week later.
+  </div>
+  <div id="player">
+    {{#if first}}
+    {{! <!-- }}
+    <div class="player player-1 selected" id="{{id}}">
+    {{! --> }}
+    {{else}}
+    <div class="player player-2" id="{{id}}">
+    {{/if}}
+      <div class="details">
+        <p class="avatar" data-avatar-x="{{x}}" data-avatar-y="{{y}}" style="background-position: -{{x}}px -{{y}}px"></p>
+        <p class="name">{{name}}</p>
+      </div>
+      <nav>
+        <a href="#pass" class="pass">Pass</a>
+        <a href="#remove" class="remove">That's not me!</a>
+      </nav>
+    </div>
+  </div>
+  <div id="house">
+    <div class="house">
+      <div class="wall-front"></div>
+      <div class="wall-left"></div>
+      <div class="wall-right"></div>
+      <div class="wall-back"></div>
+      <div class="wall-roof"></div>
+    </div>
+  </div>
+  <div id="church">
+    <div class="church">
+      <div class="wall-1"></div>
+      <div class="wall-2"></div>
+      <div class="wall-3"></div>
+      <div class="wall-4"></div>
+      <div class="wall-5"></div>
+      <div class="wall-6"></div>
+      <div class="wall-roof"></div>
+      <div class="crown-1"></div>
+      <div class="crown-2"></div>
+      <div class="crown-3"></div>
+      <div class="crown-4"></div>
+      <div class="crown-5"></div>
+      <div class="crown-6"></div>
+    </div>
+  </div>
+</div>
+<script src="js/checkPerspective.js"></script>
+</body>
+</html>
